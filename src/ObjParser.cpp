@@ -15,41 +15,41 @@ ObjParser::ObjParser(const std::string& file) : file_(file){
 ModelPtr ObjParser::parseObj() {
 	ModelPtr model(new Model());
 	
-	std::string line;
-	
 	std::ifstream file(file_);
 	
+	if (!file.is_open())
+		throw std::runtime_error("Unable to open OBJ file " + file_);
+	
+	std::string line;
 	unsigned int groupId = 0;
 	
-	if (file.is_open()) {
-		while(std::getline(file, line)) {
-			std::stringstream sstream(line);
-			
-			std::string prefix;
-			sstream >> prefix;
-			
-			if (prefix.size() > 0) {
-				if (prefix == "mtllib") {
-					std::string fileName;
-					sstream >> fileName;
-					parseMtl(fileName);
-				} else if (prefix == "v") {
-					model->addVertex(parseVertex(line));
-				} else if (prefix == "vn") {
-					model->addNormal(parseNormal(line));
-				} else if (prefix == "vt") {
-					model->addTexCoord(parseTexCoord(line));
-				} else if (prefix == "g") {
-					model->addGroup(parseGroup(groupId++, line, file));
-					groupId++;
-				} else {
-					continue;
-				}
+	while(std::getline(file, line)) {
+		std::stringstream sstream(line);
+		
+		std::string prefix;
+		sstream >> prefix;
+		
+		if (prefix.size() > 0) {
+			if (prefix == "mtllib") {
+				std::string fileName;
+				sstream >> fileName;
+				parseMtl(fileName);
+			} else if (prefix == "v") {
+				model->addVertex(parseVertex(line));
+			} else if (prefix == "vn") {
+				model->addNormal(parseNormal(line));
+			} else if (prefix == "vt") {
+				model->addTexCoord(parseTexCoord(line));
+			} else if (prefix == "g") {
+				model->addGroup(parseGroup(groupId++, line, file));
+				groupId++;
+			} else {
+				continue;
 			}
 		}
-		
-		file.close();
 	}
+	
+	file.close();
 	
 	return model;
 }

@@ -1,5 +1,6 @@
-#include "Viewer.hpp"
 #include "ObjParser.hpp"
+#include "Shaders.hpp"
+#include "Viewer.hpp"
 
 #include <GL/freeglut.h>
 
@@ -12,11 +13,16 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 	
+	std::cout << std::string(argv[0]) << std::endl;
+	
 	std::string file = std::string(argv[1]);
 
 	ObjParser parser(file);
 	
 	Viewer viewer("Model Viewer", 1024, 768);
+	
+	ShadersPtr shaders = ShadersPtr(new Shaders("shaders/simple.vs", "shaders/simple.fs"));
+	shaders->setSamplerName("texMap");
 	
 	ModelPtr model = parser.parseObj();
 	viewer.setModel(model);
@@ -26,6 +32,7 @@ int main(int argc, char** argv) {
 	
 	model->loadTextures();
 	model->compileLists();
+	model->setShaders(shaders);
 	
 	Viewer::setInstance(&viewer);
 	

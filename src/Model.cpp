@@ -32,7 +32,11 @@ void Texture::load() {
 		glGenTextures(1, &id_);
 		glBindTexture(GL_TEXTURE_2D, id_);
 		
-	    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, surface_->w, surface_->h, GL_RGB, GL_UNSIGNED_BYTE, surface_->pixels);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface_->w, surface_->h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface_->pixels);
+		
+	    //gluBuild2DMipmaps(GL_TEXTURE_2D, 3, surface_->w, surface_->h, GL_RGB, GL_UNSIGNED_BYTE, surface_->pixels);
 	    
 		loaded_ = true;
 	}
@@ -204,7 +208,14 @@ void Model::compileLists() {
 	}
 }
 
+void Model::setShaders(ShadersPtr shaders) {
+	shaders_ = shaders;
+}
+
 void Model::render() {
+	if (!shaders_.isNull())
+		shaders_->use();
+	
 	for (unsigned int i = 0; i < groups_.size(); i++) {
 		GroupPtr group = groups_[i];
 		
@@ -212,14 +223,23 @@ void Model::render() {
 		
 		MaterialPtr material = group->material_;
 		
-		if (!material->texture_.isNull())
-			material->texture_->bind();
-		
-		glMaterialfv(GL_FRONT, GL_AMBIENT, material->ka_);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, material->kd_);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, material->ks_);
-		glMaterialfv(GL_FRONT, GL_EMISSION, material->ke_);
+		if (!material->texture_.isNull()) {
+			if (!shaders_.isNull() && shaders_->hasSampler())
+				glActiveTexture(GL_TEXTURE0);
 			
+			material->texture_->bind();
+			
+			if (!shaders_.isNull() && shaders_->hasSampler())
+				glUniform1i(shaders_->samplerId(), 0);
+		}
+		
+		if (shaders_.isNull()) {
+			glMaterialfv(GL_FRONT, GL_AMBIENT, material->ka_);
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, material->kd_);
+			glMaterialfv(GL_FRONT, GL_SPECULAR, material->ks_);
+			glMaterialfv(GL_FRONT, GL_EMISSION, material->ke_);
+		}
+		
 		glCallList(groups_[i]->id_);
 		
 		glPopAttrib();

@@ -2,6 +2,7 @@
 #define _MODEL_HPP
 
 #include "Math.hpp"
+#include "Shaders.hpp"
 #include "SmartPtr.hpp"
 
 #include <GL/gl.h>
@@ -103,6 +104,8 @@ class Model {
 		void loadTextures();
 		void compileLists();
 		
+		void setShaders(ShadersPtr shaders);
+		
 		void render();
 		
 	private:
@@ -110,6 +113,7 @@ class Model {
 		std::vector<Point3> normals_;
 		std::vector<Point2> texCoords_;
 		std::vector<GroupPtr> groups_;
+		ShadersPtr shaders_;
 };
 
 typedef SmartPtr<Model> ModelPtr;

@@ -19,6 +19,10 @@ float* Vector2::data() {
 	return v_;
 }
 
+/*glm::vec2 Vector2::glm() {
+	return glm::vec2(v_[0], v_[1]);
+}*/
+
 Vector3::Vector3(float x, float y, float z) {
 	v_[0] = x;
 	v_[1] = y;
@@ -39,3 +43,7 @@ Vector3& Vector3::operator = (const Vector3& vector) {
 float* Vector3::data() {
 	return v_;
 }
+
+/*glm::vec3 Vector3::glm() {
+	return glm::vec3(v_[0], v_[1], v_[2]);
+}*/
