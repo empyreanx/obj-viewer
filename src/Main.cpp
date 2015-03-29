@@ -13,8 +13,6 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 	
-	std::cout << std::string(argv[0]) << std::endl;
-	
 	std::string file = std::string(argv[1]);
 
 	ObjParser parser(file);
