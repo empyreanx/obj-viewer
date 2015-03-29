@@ -245,6 +245,6 @@ unsigned int ObjParser::stou(const std::string &str, size_t* idx, int base) {
 	if (result > std::numeric_limits<unsigned>::max()) {
 		throw std::out_of_range("stou");
 	}
-    
-    return result;
+	
+	return result;
 }
