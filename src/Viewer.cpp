@@ -81,9 +81,9 @@ void Viewer::display() {
 void Viewer::resize(int width, int height) {
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();				// Reset The Projection Matrix
-    gluPerspective(45.0f, (GLfloat)width_/(GLfloat)height_, 0.1f, 100.0f);
-    glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluPerspective(45.0f, (GLfloat)width_/(GLfloat)height_, 0.1f, 100.0f);
+	glMatrixMode(GL_MODELVIEW);
 }
 
 void Viewer::keyDown(unsigned char key, int x, int y) {
