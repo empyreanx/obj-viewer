@@ -33,7 +33,7 @@ void Texture::load() {
 		glBindTexture(GL_TEXTURE_2D, id_);
 		
 	    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, surface_->w, surface_->h, GL_RGB, GL_UNSIGNED_BYTE, surface_->pixels);
-		
+	    
 		loaded_ = true;
 	}
 }
