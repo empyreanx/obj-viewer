@@ -12,7 +12,6 @@ A Wavefront OBJ model viewer written in C++ using OpenGL, FreeGLUT, and SDL_imag
 
 **Current Limitations:**
 * Assumptions are made about the bounds of the model.
-* Only one material library can be specified.
 * Points are ignored.
 * Many material properties are ignored.
 
