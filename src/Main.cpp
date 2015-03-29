@@ -8,7 +8,7 @@
 
 int main(int argc, char** argv) {
 	if (argc == 1) {
-		std::cout << "No model specified!" << std::endl;
+		std::cout << "Usage: obj-viewer FILE" << std::endl;
 		return -1;
 	}
 	

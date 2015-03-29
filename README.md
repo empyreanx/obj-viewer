@@ -4,9 +4,9 @@
  
 ## Introduction
 
-A Wavefront OBJ model viewer written in C++ and using OpenGL, FreeGLUT, and SDL_image.
+A Wavefront OBJ model viewer written in C++ using OpenGL, FreeGLUT, and SDL_image.
 
-Only the subset of the Wavefront OBJ specification need to render polygonal meshes is supported.
+**Note:** Only the subset of the Wavefront OBJ specification need to render polygonal meshes is supported.
 
 **Note:** All file references (material libraries, textures) are assumed to be relative to the *.obj file.
 
@@ -29,6 +29,16 @@ You must have CMake and a C++ compiler installed. Additionally, you must manuall
 link directory in CMakeLists.txt (find_package(OpenGL) is broken). To build the project run the following command:
 
 *$ cmake . && make*
+
+## Usage
+
+To view a model, enter the following command:
+
+*$ bin/obj-viewer FILE*
+
+where *FILE* is the path of the OBJ file. 
+
+The model should then be displayed in a window. Use the arrow keys rotate the model.
 
 ## License
 
