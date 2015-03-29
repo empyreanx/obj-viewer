@@ -1,6 +1,6 @@
 # Wavefront OBJ Viewer
 
-#### Warning: Work in Progress
+#### Work in Progress
  
 ## Introduction
 
