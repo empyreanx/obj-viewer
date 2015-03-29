@@ -27,20 +27,20 @@ void Viewer::initGl() {
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-		
+	
 	glCullFace(GL_BACK);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
-	glClearDepth(1.0f);	
+	glClearDepth(1.0f);
 	glDepthFunc(GL_LEQUAL);
 	glShadeModel(GL_SMOOTH);
 	
 	glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();				// Reset The Projection Matrix
-    gluPerspective(45.0f, (GLfloat)width_/(GLfloat)height_, 0.1f, 100.0f);
-    glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluPerspective(45.0f, (GLfloat)width_/(GLfloat)height_, 0.1f, 100.0f);
+	glMatrixMode(GL_MODELVIEW);
     
     glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL);
 }
 
@@ -67,10 +67,10 @@ void Viewer::idle() {
 void Viewer::display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0.0f, 0.0f, -5.0f);
-    glRotatef(thetaX_, 1.0f, 0.0f, 0.0f);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslatef(0.0f, 0.0f, -5.0f);
+	glRotatef(thetaX_, 1.0f, 0.0f, 0.0f);
 	glRotatef(thetaY_, 0.0f, 1.0f, 0.0f);
 	
 	model_->render();
