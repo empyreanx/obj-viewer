@@ -27,19 +27,23 @@ A simple Wavefront OBJ model viewer written in C++ using OpenGL, FreeGLUT, and S
 You must have OpenGL, FreeGLUT, SDL_image, CMake, and a C++ compiler installed. Additionally, you must manually set the OpenGL
 link directory in CMakeLists.txt (find_package(OpenGL) is broken).
 
-To build the project run the following command:
+To build the project, run the following command:
 
 *$ cmake . && make*
+
+## Installation
+
+To install the executable, run the following command:
+
+*$ sudo make install*
 
 ## Usage
 
 To view a model, enter the following command:
 
-*$ bin/obj-viewer FILE*
+*$ obj-viewer FILE*
 
-where *FILE* is the path of the OBJ file. You must run this command from the project directory in order for the shaders to be found.
-
-The model should then be displayed in a window. Use the arrow keys rotate the model. Escape quits the program.
+where *FILE* is the path of the OBJ file. The model should then be displayed in a window. Use the arrow keys rotate the model. Escape quits the program.
 
 ## License
 

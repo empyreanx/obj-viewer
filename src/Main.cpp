@@ -27,7 +27,11 @@ int main(int argc, char** argv) {
 	viewer.initGlut(argc, argv);
 	viewer.initGl();
 	
-	ShadersPtr shaders = ShadersPtr(new Shaders("shaders/simple.vs", "shaders/simple.fs"));
+	std::string prefix = std::string(INSTALL_PREFIX) + "/share/obj-viewer/shaders";
+	std::string vsFile = prefix + "/lambertian.vs";
+	std::string fsFile = prefix + "/lambertian.fs";
+	
+	ShadersPtr shaders = ShadersPtr(new Shaders(vsFile, fsFile));
 	shaders->setSamplerName("texMap");
 	
 	model->loadTextures();
