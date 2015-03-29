@@ -6,47 +6,59 @@
 #include <stdexcept>
 #include <string>
 #include <iostream>
+#include <vector>
 
 Shaders::Shaders(std::string vsFile, std::string fsFile) {
 	std::string vsSrc = load(vsFile);
 	std::string fsSrc = load(fsFile);
 	
-	prog_ = glCreateProgram();
+	unsigned int vsId = glCreateShader(GL_VERTEX_SHADER);
+	unsigned int fsId = glCreateShader(GL_FRAGMENT_SHADER);
 	
-	unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
-	unsigned int fs = glCreateShader(GL_FRAGMENT_SHADER);
-	
-	glAttachShader(prog_, vs);
-	glAttachShader(prog_, fs);
+	/*
+	 * Compile vertex shader
+	 */
+	int isCompiled = GL_FALSE;
 	
 	const char* vsSrcPtr = vsSrc.c_str();
-	const char* fsSrcPtr = fsSrc.c_str();
+	glShaderSource(vsId, 1, &vsSrcPtr, NULL);
+	glCompileShader(vsId);
+	glGetShaderiv(vsId, GL_COMPILE_STATUS, &isCompiled);
 	
-	glShaderSource(vs, 1, &vsSrcPtr, NULL);
-	glShaderSource(fs, 1, &fsSrcPtr, NULL);
-	
-	int logLength;
-	
-	glCompileShader(vs);
-	glGetShaderiv(vs, GL_INFO_LOG_LENGTH, &logLength);
-	
-	if (logLength > 0)
+	if (GL_FALSE == isCompiled)
 		throw std::runtime_error("Error compiling shader " + vsFile);
 
-	glCompileShader(fs);
-	glGetShaderiv(fs, GL_INFO_LOG_LENGTH, &logLength);
+	/*
+	 * Compile fragment shader
+	 */
+	isCompiled = GL_FALSE;
+	 
+	const char* fsSrcPtr = fsSrc.c_str();
+	glShaderSource(fsId, 1, &fsSrcPtr, NULL);
+	glCompileShader(fsId);
 	
-	if (logLength > 0)
+	glGetShaderiv(fsId, GL_COMPILE_STATUS, &isCompiled);
+	
+	if (GL_FALSE == isCompiled)
 		throw std::runtime_error("Error compiling shader " + fsFile);
-		
-	glLinkProgram(prog_);
-	glGetProgramiv(prog_, GL_INFO_LOG_LENGTH, &logLength);
 	
-	if (logLength > 0)
+	/*
+	 * Link program
+	 */
+	int isLinked = GL_FALSE; 
+	 
+	prog_ = glCreateProgram();	 
+	 
+	glAttachShader(prog_, vsId);
+	glAttachShader(prog_, fsId);
+	glLinkProgram(prog_);
+	glGetProgramiv(prog_, GL_LINK_STATUS, &isLinked);
+	
+	if (GL_FALSE == isLinked)
 		throw std::runtime_error("Error linking shader program");
 	
-	glDeleteShader(vs);
-	glDeleteShader(fs);
+	glDeleteShader(vsId);
+	glDeleteShader(fsId);
 }
 
 void Shaders::setSamplerName(std::string name) {
@@ -79,8 +91,10 @@ std::string Shaders::load(std::string filePath) {
 	std::string line;
 	
 	while(std::getline(file, line)) {
-		src += line;
+		src += line + "\n";
 	}
+	
+	//std::cout << src << std::endl;
 	
 	return src;
 }

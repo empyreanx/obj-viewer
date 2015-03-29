@@ -233,7 +233,7 @@ void Model::render() {
 				glUniform1i(shaders_->samplerId(), 0);
 		}
 		
-		if (shaders_.isNull()) {
+		if (material->texture_.isNull() && shaders_.isNull()) {
 			glMaterialfv(GL_FRONT, GL_AMBIENT, material->ka_);
 			glMaterialfv(GL_FRONT, GL_DIFFUSE, material->kd_);
 			glMaterialfv(GL_FRONT, GL_SPECULAR, material->ks_);

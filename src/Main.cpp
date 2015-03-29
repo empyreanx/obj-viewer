@@ -20,15 +20,15 @@ int main(int argc, char** argv) {
 	ObjParser parser(file);
 	
 	Viewer viewer("Model Viewer", 1024, 768);
-	
-	ShadersPtr shaders = ShadersPtr(new Shaders("shaders/simple.vs", "shaders/simple.fs"));
-	shaders->setSamplerName("texMap");
-	
+		
 	ModelPtr model = parser.parseObj();
 	viewer.setModel(model);
 	
 	viewer.initGlut(argc, argv);
 	viewer.initGl();
+	
+	ShadersPtr shaders = ShadersPtr(new Shaders("shaders/simple.vs", "shaders/simple.fs"));
+	shaders->setSamplerName("texMap");
 	
 	model->loadTextures();
 	model->compileLists();

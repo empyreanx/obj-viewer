@@ -1,6 +1,5 @@
-/*
- * Textbook Lambertian reflectance. I'll do something more interesting when I have time.
- */
+// Textbook Lambertian reflectance. I'll do something more interesting when I have time.
+
 varying vec3 N;
 varying vec3 L;
 uniform sampler2D texMap;
