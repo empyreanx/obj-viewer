@@ -35,7 +35,7 @@ To view a model, enter the following command:
 
 *$ bin/obj-viewer FILE*
 
-where *FILE* is the path of the OBJ file. 
+where *FILE* is the path of the OBJ file. You must run this command from the project directory in order for the shaders to be found.
 
 The model should then be displayed in a window. Use the arrow keys rotate the model. Escape quits the program.
 
