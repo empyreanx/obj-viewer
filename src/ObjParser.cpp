@@ -241,8 +241,8 @@ std::vector<std::string> ObjParser::split(const std::string& str, char delim) {
 
 unsigned int ObjParser::stou(const std::string &str, size_t* idx, int base) {
 	unsigned long result = std::stoul(str, idx, base);
-    
-    if (result > std::numeric_limits<unsigned>::max()) {
+	
+	if (result > std::numeric_limits<unsigned>::max()) {
 		throw std::out_of_range("stou");
 	}
     
