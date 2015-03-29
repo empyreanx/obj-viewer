@@ -4,7 +4,7 @@
  
 ## Introduction
 
-A Wavefront OBJ model viewer written in C++ using OpenGL, FreeGLUT, and SDL_image.
+A simple Wavefront OBJ model viewer written in C++ using OpenGL, FreeGLUT, and SDL_image.
 
 **Note:** Only the subset of the Wavefront OBJ specification need to render polygonal meshes is supported.
 
