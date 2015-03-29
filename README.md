@@ -37,7 +37,7 @@ To view a model, enter the following command:
 
 where *FILE* is the path of the OBJ file. 
 
-The model should then be displayed in a window. Use the arrow keys rotate the model.
+The model should then be displayed in a window. Use the arrow keys rotate the model. Escape quits the program.
 
 ## License
 
