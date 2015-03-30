@@ -41,7 +41,6 @@ void Viewer::initGl() {
     
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    glEnable(GL_COLOR_MATERIAL);
 }
 
 void Viewer::setModel(const SmartPtr<Model>& model) {
