@@ -5,6 +5,7 @@
 #include <GL/freeglut.h>
 
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
 int main(int argc, char** argv) {
@@ -13,17 +14,23 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 	
-	std::string file = std::string(argv[1]);
+	std::string fileName = std::string(argv[1]);
 
-	std::cout << "Parsing model " << file << std::endl;
-
-	ObjParser parser(file);
+	ModelPtr model;
+	ObjParser parser;
+	
+	std::cout << "Parsing model " << fileName << std::endl;
+	
+	try {	
+		model = parser.parseObj(fileName);
+	} catch (std::runtime_error& e) {
+		std::cerr << e.what() << std::endl;
+		return -1;
+	}
 	
 	Viewer viewer("Model Viewer", 1024, 768);
-		
-	ModelPtr model = parser.parseObj();
+			
 	viewer.setModel(model);
-	
 	viewer.initGlut(argc, argv);
 	viewer.initGl();
 	
