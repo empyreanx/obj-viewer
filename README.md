@@ -25,7 +25,7 @@ A simple Wavefront OBJ model viewer written in C++ using OpenGL, FreeGLUT, and S
 ## Building 
 
 You must have OpenGL, FreeGLUT, SDL_image, CMake, and a C++ compiler installed. Additionally, you must manually set the OpenGL
-link directory in CMakeLists.txt (find_package(OpenGL) is broken).
+link directory in CMakeLists.txt (the CMake command find_package(OpenGL) is broken).
 
 To build the project, run the following command:
 
