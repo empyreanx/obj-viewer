@@ -55,6 +55,7 @@ Material::Material(const std::string& name) : name_(name) {
 	kd_[0] = kd_[1] = kd_[2] = 0.8f;
 	ks_[0] = ks_[1] = ks_[2] = 0.0f;
 	ke_[0] = ke_[1] = ke_[2] = 0.0f;
+	ka_[3] = kd_[3] = ks_[3] = ke_[3] = 1.0f;
 }
 
 Material::Material(const Material& material) {
@@ -219,13 +220,19 @@ void Model::render() {
 	for (unsigned int i = 0; i < groups_.size(); i++) {
 		GroupPtr group = groups_[i];
 		
-		glPushAttrib(GL_LIGHTING_BIT);
-		
 		MaterialPtr material = group->material_;
 		
 		if (!material->texture_.isNull()) {
 			if (!shaders_.isNull() && shaders_->hasSampler())
 				glActiveTexture(GL_TEXTURE0);
+			
+			// Disable material parameters until I have a chance to properly test and debug them.
+			/*if (!shaders_.isNull()) {
+				glMaterialfv(GL_FRONT, GL_AMBIENT, material->ka_);
+				glMaterialfv(GL_FRONT, GL_DIFFUSE, material->kd_);
+				glMaterialfv(GL_FRONT, GL_SPECULAR, material->ks_);
+				glMaterialfv(GL_FRONT, GL_EMISSION, material->ke_);
+			}*/
 			
 			material->texture_->bind();
 			
@@ -233,15 +240,6 @@ void Model::render() {
 				glUniform1i(shaders_->samplerId(), 0);
 		}
 		
-		if (material->texture_.isNull() && shaders_.isNull()) {
-			glMaterialfv(GL_FRONT, GL_AMBIENT, material->ka_);
-			glMaterialfv(GL_FRONT, GL_DIFFUSE, material->kd_);
-			glMaterialfv(GL_FRONT, GL_SPECULAR, material->ks_);
-			glMaterialfv(GL_FRONT, GL_EMISSION, material->ke_);
-		}
-		
 		glCallList(groups_[i]->id_);
-		
-		glPopAttrib();
 	}
 }

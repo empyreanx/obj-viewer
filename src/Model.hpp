@@ -47,10 +47,10 @@ class Material {
 		
 	private:
 		std::string name_;
-		float ka_[3];
-		float kd_[3];
-		float ks_[3];
-		float ke_[3];
+		float ka_[4];
+		float kd_[4];
+		float ks_[4];
+		float ke_[4];
 		TexturePtr texture_;
 };
 
