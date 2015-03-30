@@ -38,12 +38,12 @@ int main(int argc, char** argv) {
 	std::string vsFile = prefix + "/lambertian.vs";
 	std::string fsFile = prefix + "/lambertian.fs";
 	
-	//ShadersPtr shaders(new Shaders(vsFile, fsFile));
-	//shaders->setSamplerName("texMap");
+	ShadersPtr shaders(new Shaders(vsFile, fsFile));
+	shaders->setSamplerName("texMap");
 	
 	model->loadTextures();
 	model->compileLists();
-	//model->setShaders(shaders);
+	model->setShaders(shaders);
 	
 	Viewer::setInstance(&viewer);
 	
