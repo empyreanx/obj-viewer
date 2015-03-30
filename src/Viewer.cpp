@@ -29,7 +29,7 @@ void Viewer::initGl() {
 	glEnable(GL_CULL_FACE);
 	
 	glCullFace(GL_BACK);
-	glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClearDepth(1.0f);
 	glDepthFunc(GL_LEQUAL);
 	glShadeModel(GL_SMOOTH);
