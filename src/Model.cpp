@@ -132,8 +132,8 @@ void Face::addTexCoordIndex(unsigned int index) {
 Group::Group(unsigned int id, const std::string& name, const MaterialPtr& material) : id_(id), name_(name), material_(material) {
 }
 
-void Group::addFace(const Face& face) {
-	faces_.push_back(FacePtr(new Face(face)));
+void Group::addFace(const FacePtr& face) {
+	faces_.push_back(face);
 }
 
 /*
@@ -154,8 +154,8 @@ void Model::addTexCoord(const Point2& coord) {
 	texCoords_.push_back(coord);
 }
 
-void Model::addGroup(const Group& group) {
-	groups_.push_back(GroupPtr(new Group(group)));
+void Model::addGroup(const GroupPtr& group) {
+	groups_.push_back(group);
 }
 
 void Model::loadTextures() {

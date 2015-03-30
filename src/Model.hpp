@@ -80,7 +80,7 @@ class Group {
 	public:
 		Group(unsigned int id, const std::string& name, const MaterialPtr& material);
 		
-		void addFace(const Face& face);
+		void addFace(const FacePtr& face);
 		
 	private:
 		int id_;
@@ -99,7 +99,7 @@ class Model {
 		void addNormal(const Point3& normal);
 		void addTexCoord(const Point2& coord);
 		
-		void addGroup(const Group& group);
+		void addGroup(const GroupPtr& group);
 		
 		void loadTextures();
 		void compileLists();

@@ -24,8 +24,8 @@ class ObjParser {
 		Point3 parseNormal(std::stringstream& sstream);
 		Point2 parseTexCoord(std::stringstream& sstream);
 		std::string parseUseMtl(const std::string& line);
-		void parseFaces(std::ifstream& file, Group& group);
-		Face parseFace(const std::string& line);
+		void parseFaces(std::ifstream& file, GroupPtr& group);
+		FacePtr parseFace(const std::string& line);
 		
 		/*
 		 * Material parsing methods
