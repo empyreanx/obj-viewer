@@ -13,7 +13,7 @@ class Viewer {
 		void initGlut(int argc, char** argv);
 		void initGl();
 		
-		void setModel(const SmartPtr<Model>& model);
+		void setModel(const ModelPtr& model);
 		
 		void start();
 		void stop();
@@ -38,7 +38,7 @@ class Viewer {
 		int width_, height_;
 		int windowId_;
 		bool running_;
-		SmartPtr<Model> model_;
+		ModelPtr model_;
 		float thetaX_, thetaY_, thetaZ_;
 };
 
