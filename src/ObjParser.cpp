@@ -96,7 +96,7 @@ std::string ObjParser::parseUseMtl(const std::string& line) {
 	sstream >> prefix;
 		
 	if (prefix != "usemtl")
-		throw std::runtime_error("Expected 'usemtl' after group declaration");
+		throw std::runtime_error("Expected 'usemtl' after group declaration in file " + file_);
 	
 	return parseName(sstream);
 }
@@ -119,7 +119,7 @@ Face ObjParser::parseFace(const std::string& line) {
 	sstream >> prefix;
 	
 	if ("f" != prefix)
-		throw std::runtime_error("Expected face definition");
+		throw std::runtime_error("Expected face definition in file " + file_);
 	
 	while (sstream >> indexGroup) {
 		std::vector<std::string> indices = split(indexGroup, '/');
@@ -136,7 +136,7 @@ Face ObjParser::parseFace(const std::string& line) {
 			if ("" != indices[1])
 				face.addTexCoordIndex(stou(indices[1]));
 		} else {
-			throw std::runtime_error("Invalid face definition");
+			throw std::runtime_error("Invalid face definition in file " + file_);
 		}
 	}
 	
@@ -150,61 +150,58 @@ void ObjParser::parseMtl(const std::string& fileName) {
 	
 	MaterialPtr material;
 	
-	if (file.is_open()) {
-		while(std::getline(file, line)) {
-			std::stringstream sstream(line);
-			
-			std::string prefix;
-			sstream >> prefix;
-			
-			if (prefix.size() > 0) {
-				if (prefix == "newmtl") {
-					if (!material.isNull())
-						materials_.push_back(material);
-					
-					material = MaterialPtr(new Material(parseName(sstream)));					
-				} else if (prefix == "Ka") {
-					float v1, v2, v3;
-					sstream >> v1 >> v2 >> v3;
-					material->setKa(v1, v2, v3);
-				} else if (prefix == "Ks") {
-					float v1, v2, v3;
-					sstream >> v1 >> v2 >> v3;
-					material->setKs(v1, v2, v3);
-				} else if (prefix == "Kd") {
-					float v1, v2, v3;
-					sstream >> v1 >> v2 >> v3;
-					material->setKd(v1, v2, v3);
-				} else if (prefix == "Ke") {
-					float v1, v2, v3;
-					sstream >> v1 >> v2 >> v3;
-					material->setKe(v1, v2, v3);
-				} else if (prefix == "map_Kd") {
-					std::string fileName;
-					sstream >> fileName;
-					material->setTexture(TexturePtr(new Texture(path_ + "/" + fileName)));
-				} else {
-					continue;
-				}
+	if (!file.is_open())
+		throw std::runtime_error("Unable to open material library " + fileName);
+	
+	while(std::getline(file, line)) {
+		std::stringstream sstream(line);
+		
+		std::string prefix;
+		sstream >> prefix;
+		
+		float v1, v2, v3;
+		
+		if (prefix.size() > 0) {
+			if ("newmtl" == prefix) {
+				if (!material.isNull())
+					materials_.push_back(material);
+				
+				material = MaterialPtr(new Material(parseName(sstream)));					
+			} else if ("Ka" == prefix) {
+				sstream >> v1 >> v2 >> v3;
+				material->setKa(v1, v2, v3);
+			} else if ("Ks" == prefix) {
+				sstream >> v1 >> v2 >> v3;
+				material->setKs(v1, v2, v3);
+			} else if ("Kd" == prefix) {
+				sstream >> v1 >> v2 >> v3;
+				material->setKd(v1, v2, v3);
+			} else if ("Ke" == prefix) {
+				sstream >> v1 >> v2 >> v3;
+				material->setKe(v1, v2, v3);
+			} else if ("map_Kd" == prefix) {
+				std::string fileName;
+				sstream >> fileName;
+				material->setTexture(TexturePtr(new Texture(path_ + "/" + fileName)));
+			} else {
+				continue;
 			}
 		}
-		
-		if (!material.isNull())
-			materials_.push_back(material);
-		
-		file.close();
-	} else {
-		throw std::runtime_error("Unable to open material library " + fileName);
 	}
+		
+	if (!material.isNull())
+		materials_.push_back(material);
+	
+	file.close();
 }
 
 MaterialPtr& ObjParser::findMaterial(const std::string& name) {
 	for (unsigned int i = 0; i < materials_.size(); i++) {
-		if (materials_[i]->name() == name)
+		if (name == materials_[i]->name())
 			return materials_[i];
 	}
 	
-	throw std::runtime_error("Material " + name + " was not found!");
+	throw std::runtime_error("Material " + name + " was referred to in file " + file_ + " but was not found");
 }
 
 std::string ObjParser::parseName(std::stringstream& sstream) {
