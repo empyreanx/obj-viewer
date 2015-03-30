@@ -36,8 +36,6 @@ void Texture::load() {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface_->w, surface_->h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface_->pixels);
 		
-	    //gluBuild2DMipmaps(GL_TEXTURE_2D, 3, surface_->w, surface_->h, GL_RGB, GL_UNSIGNED_BYTE, surface_->pixels);
-	    
 		loaded_ = true;
 	}
 }
