@@ -21,11 +21,14 @@ ModelPtr ObjParser::parseObj(const std::string& fileName) {
 	
 	if (!file.is_open())
 		throw std::runtime_error("Unable to open OBJ file " + fileName);
+
+	std::vector<MaterialPtr> materials;
+	MaterialPtr material;
 	
-	std::string line;
+	GroupPtr group;
 	unsigned int groupId = 0;
 	
-	std::vector<MaterialPtr> materials;
+	std::string line;
 	
 	while(std::getline(file, line)) {
 		std::stringstream sstream(line);
@@ -36,21 +39,29 @@ ModelPtr ObjParser::parseObj(const std::string& fileName) {
 		if (prefix.size() > 0) {
 			if ("mtllib" == prefix) {
 				std::string fileName = parseFileName(prefix, line);
-				materials = parseMtl(path + fileName);
+				std::vector<MaterialPtr> mats = parseMtl(path + fileName);
+				materials.insert(materials.begin(), mats.begin(), mats.end());
 			} else if ("v" == prefix) {
 				model->addVertex(parseVertex(sstream));
 			} else if ("vn" == prefix) {
 				model->addNormal(parseNormal(sstream));
 			} else if ("vt" == prefix) {
 				model->addTexCoord(parseTexCoord(sstream));
-			} else if ("g" == prefix) {
-				std::string groupName = parseName(sstream);
-				model->addGroup(parseGroup(file, groupId++, groupName, materials));
+			} else if ("usemtl" == prefix) {
+				if (!group.isNull())
+					model->addGroup(group);
+
+				group = GroupPtr(new Group(groupId++, findMaterial(materials, parseName(sstream))));
+			} else if ("f" == prefix) {
+				group->addFace(parseFace(sstream, material));
 			} else {
 				continue;
 			}
 		}
 	}
+	
+	if (!group.isNull())
+		model->addGroup(group);
 	
 	file.close();
 	
@@ -81,63 +92,15 @@ Point2 ObjParser::parseTexCoord(std::stringstream& sstream) {
 	return Point2(x, 1.0 - y);
 }
 
-std::string ObjParser::parseUseMtl(const std::string& line) {
-	std::stringstream sstream(line);
+FacePtr ObjParser::parseFace(std::stringstream& sstream, const MaterialPtr& material) {
+	FacePtr face;
 	
-	std::string prefix;
-	sstream >> prefix;
-		
-	if (prefix != "usemtl")
-		throw std::runtime_error("Expected 'usemtl' after group declaration in file");
+	if (!material.isNull())
+		face = FacePtr(new Face(material));
+	else
+		face = FacePtr(new Face());
 	
-	return parseName(sstream);
-}
-
-GroupPtr ObjParser::parseGroup(std::ifstream& file, unsigned int groupId, const std::string& groupName, std::vector<MaterialPtr>& materials) {
-	std::string line;
-	
-	if (!std::getline(file, line))
-		throw std::runtime_error("OBJ file ended unexpectedly");
-	
-	MaterialPtr material;
-	std::string materialName = parseUseMtl(line);
-	
-	for (unsigned int i = 0; i < materials.size(); i++) {
-		if (materialName == materials[i]->name()) {
-			material = materials[i];
-			break;
-		}
-	}
-	
-	if (material.isNull())
-		throw std::runtime_error("Unable to find material " + materialName + " referred to in OBJ file");
-	
-	GroupPtr group(new Group(groupId++, groupName, material));
-	
-	parseFaces(file, group);
-	
-	return group;
-}
-
-void ObjParser::parseFaces(std::ifstream& file, GroupPtr& group) {
-	std::string line;
-	
-	while ('f' == file.peek()) {
-		std::getline(file, line);
-		group->addFace(parseFace(line));
-	}
-}
-
-FacePtr ObjParser::parseFace(const std::string& line) {
-	FacePtr face(new Face());
-	
-	std::stringstream sstream(line);
-	std::string prefix, indexGroup;
-	
-	sstream >> prefix;
-	
-	if ("f" != prefix)
-		throw std::runtime_error("Expected face definition in file");
+	std::string indexGroup;
 	
 	while (sstream >> indexGroup) {
 		std::vector<std::string> indices = split(indexGroup, '/');
@@ -154,12 +117,23 @@ FacePtr ObjParser::parseFace(const std::string& line) {
 			if ("" != indices[1])
 				face->addTexCoordIndex(stou(indices[1]));
 		} else {
-			throw std::runtime_error("Invalid face definition in file");
+			throw std::runtime_error("Invalid face definition in OBJ file");
 		}
 	}
 	
 	return face;
 }
+
+MaterialPtr ObjParser::findMaterial(const std::vector<MaterialPtr>& materials, const std::string& name) {
+	for (unsigned int i = 0; i < materials.size(); i++) {
+		if (materials[i]->name() == name)
+			return materials[i];
+	}
+	
+	throw std::runtime_error("Unable to find referenced material " + name);
+}
+
+
 
 std::vector<MaterialPtr> ObjParser::parseMtl(const std::string& fileName) {
 	std::string path = filePath(fileName);

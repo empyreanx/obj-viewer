@@ -88,7 +88,7 @@ Material& Material::operator = (const Material& material) {
 	return *this;
 }
 
-std::string Material::name() {
+std::string Material::name() const {
 	return name_;
 }
 
@@ -121,10 +121,23 @@ void Material::setTexture(const SmartPtr<Texture>& texture) {
 }
 
 /*
+ * Group
+ */
+Group::Group(unsigned int id, const MaterialPtr& material) : id_(id), material_(material) {
+}
+
+void Group::addFace(const FacePtr& face) {
+	faces_.push_back(face);
+}
+
+/*
  * Face
  */
 Face::Face() {
-} 
+}
+
+Face::Face(const MaterialPtr& material) : material_(material) {
+}
  
 void Face::addVertexIndex(unsigned int index) {
 	vertexIndices_.push_back(index);
@@ -136,16 +149,6 @@ void Face::addNormalIndex(unsigned int index) {
 
 void Face::addTexCoordIndex(unsigned int index) {
 	texCoordIndices_.push_back(index);
-}
-
-/*
- * Group
- */
-Group::Group(unsigned int id, const std::string& name, const MaterialPtr& material) : id_(id), name_(name), material_(material) {
-}
-
-void Group::addFace(const FacePtr& face) {
-	faces_.push_back(face);
 }
 
 /*
@@ -199,16 +202,16 @@ void Model::compileLists() {
 				
 				if (face->texCoordIndices_.size() > 0) {
 					index = face->texCoordIndices_[k];
-					glTexCoord2fv(texCoords_[index-1].data());
+					glTexCoord2fv(texCoords_[index - 1].data());
 				}
 				
 				if (face->normalIndices_.size() > 0) {
 					index = face->normalIndices_[k];
-					glNormal3fv(normals_[index-1].data());
+					glNormal3fv(normals_[index - 1].data());
 				}
 				
 				index = face->vertexIndices_[k];
-				glVertex3fv(vertices_[index-1].data());
+				glVertex3fv(vertices_[index - 1].data());
 			}
 			
 			glEnd();
@@ -254,3 +257,4 @@ void Model::render() {
 		glCallList(groups_[i]->id_);
 	}
 }
+

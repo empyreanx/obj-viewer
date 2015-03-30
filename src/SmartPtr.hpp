@@ -13,10 +13,10 @@ class SmartPtr {
 		SmartPtr(const SmartPtr<T>& sp);
 		SmartPtr<T>& operator = (const SmartPtr<T>& sp);
 		
-		bool isNull();
+		bool isNull() const;
 	
-		T& operator * ();
-		T* operator -> ();
+		T& operator * () const;
+		T* operator -> () const;
 		
 	private:
 		unsigned int *_refs;
@@ -71,17 +71,17 @@ SmartPtr<T>& SmartPtr<T>::operator = (const SmartPtr<T>& sp) {
 }
 
 template <typename T>	
-bool SmartPtr<T>::isNull() {
+bool SmartPtr<T>::isNull() const {
 	return (_value == NULL);
 }
 
 template <typename T>	
-T& SmartPtr<T>::operator * () {
+T& SmartPtr<T>::operator * () const {
 	return *_value;
 }
 
 template <typename T>
-T* SmartPtr<T>::operator -> () {
+T* SmartPtr<T>::operator -> () const {
 	return _value;
 }
 

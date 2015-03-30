@@ -36,7 +36,7 @@ class Material {
 		Material(const Material& material);
 		Material& operator = (const Material& material);
 
-		std::string name();
+		std::string name() const;
 
 		void setKa(float a1, float a2, float a3);
 		void setKd(float d1, float d2, float d3);
@@ -61,12 +61,14 @@ class Face {
 	
 	public:
 		Face();
+		Face(const MaterialPtr& material);
 		
 		void addVertexIndex(unsigned int index);
 		void addNormalIndex(unsigned int index);
 		void addTexCoordIndex(unsigned int index);
 		
 	private:
+		MaterialPtr material_;
 		std::vector<unsigned int> vertexIndices_;
 		std::vector<unsigned int> normalIndices_;
 		std::vector<unsigned int> texCoordIndices_;
@@ -78,7 +80,7 @@ class Group {
 	friend class Model;
 	
 	public:
-		Group(unsigned int id, const std::string& name, const MaterialPtr& material);
+		Group(unsigned int id, const MaterialPtr& material);
 		
 		void addFace(const FacePtr& face);
 		
