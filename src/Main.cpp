@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
 	std::string vsFile = prefix + "/lambertian.vs";
 	std::string fsFile = prefix + "/lambertian.fs";
 	
-	ShadersPtr shaders = ShadersPtr(new Shaders(vsFile, fsFile));
+	ShadersPtr shaders(new Shaders(vsFile, fsFile));
 	shaders->setSamplerName("texMap");
 	
 	model->loadTextures();
