@@ -36,7 +36,8 @@ void Viewer::initGl() {
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0f, (GLfloat)width_/(GLfloat)height_, 0.1f, 100.0f);
+	//TODO: automatically far clipping plane based on model size
+	gluPerspective(45.0f, (GLfloat)width_/(GLfloat)height_, 0.1f, 1000.0f);
 	glMatrixMode(GL_MODELVIEW);
     
     glEnable(GL_LIGHTING);
@@ -68,7 +69,10 @@ void Viewer::display() {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	
+	// TODO: automatically set initial translation based on model size
 	glTranslatef(0.0f, 0.0f, -5.0f);
+	//glTranslatef(0.0f, 0.0f, -100.0f);
 	glRotatef(thetaX_, 1.0f, 0.0f, 0.0f);
 	glRotatef(thetaY_, 0.0f, 1.0f, 0.0f);
 	
@@ -81,7 +85,8 @@ void Viewer::resize(int width, int height) {
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0f, (GLfloat)width_/(GLfloat)height_, 0.1f, 100.0f);
+	//TODO: automatically far clipping plane based on model size
+	gluPerspective(45.0f, (GLfloat)width_/(GLfloat)height_, 0.1f, 1000.0f);
 	glMatrixMode(GL_MODELVIEW);
 }
 

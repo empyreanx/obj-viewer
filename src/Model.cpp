@@ -33,15 +33,18 @@ void Texture::load() {
 
 		int bpp = surface_->format->BitsPerPixel;
 		
-		if (24 != bpp)
-			throw std::runtime_error("Bits per pixel must be 24 not " + std::to_string(bpp));
-		
 		glGenTextures(1, &id_);
 		glBindTexture(GL_TEXTURE_2D, id_);
 		
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface_->w, surface_->h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface_->pixels);
+		
+		if (8 == bpp)
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface_->w, surface_->h, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, surface_->pixels);
+		else if (24 == bpp)
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface_->w, surface_->h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface_->pixels);
+		else
+			throw std::runtime_error("Bits per pixel of " + std::to_string(bpp) + " not supported");
 		
 		loaded_ = true;
 	}
@@ -231,6 +234,8 @@ void Model::render() {
 		MaterialPtr material = group->material_;
 		
 		// Disable material parameters until I have a chance to properly test and debug them.
+		// Update: these calls appear to be correct, which means that the model I'm using for
+		// testing was incorrectly converted from LW to OBJ.
 		/*glMaterialfv(GL_FRONT, GL_AMBIENT, material->ka_);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, material->kd_);
 		glMaterialfv(GL_FRONT, GL_SPECULAR, material->ks_);
