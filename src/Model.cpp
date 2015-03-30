@@ -49,10 +49,13 @@ void Texture::bind() {
  * Material
  */
 Material::Material(const std::string& name) : name_(name) {
-	ka_[0] = ka_[1] = ka_[2] = 0.2f;
-	kd_[0] = kd_[1] = kd_[2] = 0.8f;
-	ks_[0] = ks_[1] = ks_[2] = 0.0f;
-	ke_[0] = ke_[1] = ke_[2] = 0.0f;
+	for (int i = 0; i < 3; i++) {
+		ka_[i] = 0.2f;
+		kd_[i] = 0.8f;
+		ks_[i] = 0.0f;
+		ke_[i] = 0.0f;
+	}
+	
 	ka_[3] = kd_[3] = ks_[3] = ke_[3] = 1.0f;
 }
 
@@ -63,7 +66,7 @@ Material::Material(const Material& material) {
 Material& Material::operator = (const Material& material) {
 	name_ = material.name_;
 	
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 4; i++) {
 		ka_[i] = material.ka_[i];
 		kd_[i] = material.kd_[i];
 		ks_[i] = material.ks_[i];
@@ -220,17 +223,15 @@ void Model::render() {
 		
 		MaterialPtr material = group->material_;
 		
+		// Disable material parameters until I have a chance to properly test and debug them.
+		/*glMaterialfv(GL_FRONT, GL_AMBIENT, material->ka_);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, material->kd_);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, material->ks_);
+		glMaterialfv(GL_FRONT, GL_EMISSION, material->ke_);*/
+		
 		if (!material->texture_.isNull()) {
 			if (!shaders_.isNull() && shaders_->hasSampler())
 				glActiveTexture(GL_TEXTURE0);
-			
-			// Disable material parameters until I have a chance to properly test and debug them.
-			/*if (!shaders_.isNull()) {
-				glMaterialfv(GL_FRONT, GL_AMBIENT, material->ka_);
-				glMaterialfv(GL_FRONT, GL_DIFFUSE, material->kd_);
-				glMaterialfv(GL_FRONT, GL_SPECULAR, material->ks_);
-				glMaterialfv(GL_FRONT, GL_EMISSION, material->ke_);
-			}*/
 			
 			material->texture_->bind();
 			
