@@ -19,8 +19,6 @@ A simple Wavefront OBJ model viewer written in C++ using OpenGL, FreeGLUT, and S
 * Address limitations.
 * Implement Arcball technique for mouse interaction.
 * Implement anti-aliasing.
-* Implement better shaders.
-* Make parsing more robust.
 
 ## Building 
 
