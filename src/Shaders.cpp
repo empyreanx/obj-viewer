@@ -94,7 +94,5 @@ std::string Shaders::load(std::string filePath) {
 		src += line + "\n";
 	}
 	
-	//std::cout << src << std::endl;
-	
 	return src;
 }

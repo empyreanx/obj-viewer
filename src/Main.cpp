@@ -15,6 +15,8 @@ int main(int argc, char** argv) {
 	
 	std::string file = std::string(argv[1]);
 
+	std::cout << "Parsing model " << file << std::endl;
+
 	ObjParser parser(file);
 	
 	Viewer viewer("Model Viewer", 1024, 768);

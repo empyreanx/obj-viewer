@@ -23,12 +23,19 @@ Texture::~Texture() {
 
 void Texture::load() {
 	if (!loaded_) {
+		std::cout << "Loading texture " << file_ << std::endl;
+		
 		surface_ = IMG_Load(file_.c_str());
 
 		if (NULL == surface_) {
 			throw std::runtime_error("Unable to load image " + file_);
 		}
 
+		int bpp = surface_->format->BitsPerPixel;
+		
+		if (24 != bpp)
+			throw std::runtime_error("Bits per pixel must be 24 not " + std::to_string(bpp));
+		
 		glGenTextures(1, &id_);
 		glBindTexture(GL_TEXTURE_2D, id_);
 		

@@ -31,8 +31,7 @@ ModelPtr ObjParser::parseObj() {
 		
 		if (prefix.size() > 0) {
 			if ("mtllib" == prefix) {
-				std::string fileName;
-				sstream >> fileName;
+				std::string fileName = line.substr(line.find(prefix) + prefix.size() + 1);
 				parseMtl(fileName);
 			} else if ("v" == prefix) {
 				model->addVertex(parseVertex(sstream));
@@ -179,8 +178,7 @@ void ObjParser::parseMtl(const std::string& fileName) {
 				sstream >> v1 >> v2 >> v3;
 				material->setKe(v1, v2, v3);
 			} else if ("map_Kd" == prefix) {
-				std::string fileName;
-				sstream >> fileName;
+				std::string fileName = line.substr(line.find(prefix) + prefix.size() + 1);
 				material->setTexture(TexturePtr(new Texture(path_ + "/" + fileName)));
 			} else {
 				continue;
