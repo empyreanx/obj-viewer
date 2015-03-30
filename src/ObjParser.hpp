@@ -20,10 +20,11 @@ class ObjParser {
 		/*
 		 * OBJ parsing methods
 		 */
-		Point3 parseVertex(const std::string& line);
-		Point3 parseNormal(const std::string& line);
-		Point2 parseTexCoord(const std::string& line);
-		Group parseGroup(unsigned int id, std::string line, std::ifstream& file);
+		Point3 parseVertex(std::stringstream& sstream);
+		Point3 parseNormal(std::stringstream& sstream);
+		Point2 parseTexCoord(std::stringstream& sstream);
+		std::string parseUseMtl(const std::string& line);
+		void parseFaces(std::ifstream& file, Group& group);
 		Face parseFace(const std::string& line);
 		
 		/*

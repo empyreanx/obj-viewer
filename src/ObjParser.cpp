@@ -30,19 +30,30 @@ ModelPtr ObjParser::parseObj() {
 		sstream >> prefix;
 		
 		if (prefix.size() > 0) {
-			if (prefix == "mtllib") {
+			if ("mtllib" == prefix) {
 				std::string fileName;
 				sstream >> fileName;
 				parseMtl(fileName);
-			} else if (prefix == "v") {
-				model->addVertex(parseVertex(line));
-			} else if (prefix == "vn") {
-				model->addNormal(parseNormal(line));
-			} else if (prefix == "vt") {
-				model->addTexCoord(parseTexCoord(line));
-			} else if (prefix == "g") {
-				model->addGroup(parseGroup(groupId++, line, file));
-				groupId++;
+			} else if ("v" == prefix) {
+				model->addVertex(parseVertex(sstream));
+			} else if ("vn" == prefix) {
+				model->addNormal(parseNormal(sstream));
+			} else if ("vt" == prefix) {
+				model->addTexCoord(parseTexCoord(sstream));
+			} else if ("g" == prefix) {
+				std::string groupName;
+				sstream >> groupName;
+				
+				if (!std::getline(file, line))
+					throw std::runtime_error("File " + file_ + " ended unexpectedly");
+				
+				std::string materialName = parseUseMtl(line);
+				
+				Group group(groupId++, groupName, findMaterial(materialName));
+				
+				parseFaces(file, group);
+				
+				model->addGroup(group);
 			} else {
 				continue;
 			}
@@ -54,71 +65,49 @@ ModelPtr ObjParser::parseObj() {
 	return model;
 }
 
-Point3 ObjParser::parseVertex(const std::string& line) {
-	float x, y, z;	
-	std::string prefix;
+Point3 ObjParser::parseVertex(std::stringstream& sstream) {
+	float x, y, z;
 	
-	std::stringstream sstream(line);
-	
-	sstream >> prefix >> x >> y >> z;
+	sstream >> x >> y >> z;
 	
 	return Point3(x, y, z);
 }
 
-Point3 ObjParser::parseNormal(const std::string& line) {
+Point3 ObjParser::parseNormal(std::stringstream& sstream) {
 	float x, y, z;	
-	std::string prefix;
 	
-	std::stringstream sstream(line);
-	
-	sstream >> prefix >> x >> y >> z;
+	sstream >> x >> y >> z;
 	
 	return Point3(x, y, z);
 }
 
-Point2 ObjParser::parseTexCoord(const std::string& line) {
+Point2 ObjParser::parseTexCoord(std::stringstream& sstream) {
 	float x, y;
-	std::string prefix;
 	
-	std::stringstream sstream(line);
-	
-	sstream >> prefix >> x >> y;
+	sstream >> x >> y;
 	
 	return Point2(x, 1.0 - y);
 }
 
-Group ObjParser::parseGroup(unsigned int id, std::string line, std::ifstream& file) {
-	//parse group declaration
-	std::string prefix, groupName, materialName;
+std::string ObjParser::parseUseMtl(const std::string& line) {
+	std::stringstream sstream(line);
 	
-	{
-		std::stringstream sstream(line);
-		sstream >> prefix;
-		groupName = parseName(sstream);
-	}
-	
-	//find material declaration
-	std::getline(file, line);
-	
-	{
-		std::stringstream sstream(line);
-		sstream >> prefix;
+	std::string prefix;
+	sstream >> prefix;
 		
-		if (prefix != "usemtl")
-			throw std::runtime_error("Expected 'usemtl' after group declaration");
-		
-		materialName = parseName(sstream);
-	}
+	if (prefix != "usemtl")
+		throw std::runtime_error("Expected 'usemtl' after group declaration");
 	
-	//create group and parse faces
-	Group group(id, groupName, findMaterial(materialName));
+	return parseName(sstream);
+}
+
+void ObjParser::parseFaces(std::ifstream& file, Group& group) {
+	std::string line;
 	
 	while ('f' == file.peek()) {
 		std::getline(file, line);
 		group.addFace(parseFace(line));
 	}
-	
-	return group;
 }
 
 Face ObjParser::parseFace(const std::string& line) {
@@ -128,6 +117,9 @@ Face ObjParser::parseFace(const std::string& line) {
 	std::string prefix, indexGroup;
 	
 	sstream >> prefix;
+	
+	if ("f" != prefix)
+		throw std::runtime_error("Expected face definition");
 	
 	while (sstream >> indexGroup) {
 		std::vector<std::string> indices = split(indexGroup, '/');
