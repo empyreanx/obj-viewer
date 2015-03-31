@@ -154,7 +154,11 @@ void Face::addTexCoordIndex(unsigned int index) {
 /*
  * Model
  */
-Model::Model() {
+Model::Model() : useParams_(false) {
+}
+
+void Model::setUseParams(bool useParams) {
+	useParams_ = useParams;
 }
 
 void Model::addVertex(const Point3& vertex) {
@@ -171,6 +175,44 @@ void Model::addTexCoord(const Point2& coord) {
 
 void Model::addGroup(const GroupPtr& group) {
 	groups_.push_back(group);
+}
+
+void Model::centroid() {
+	if (vertices_.size() == 0)
+		throw std::runtime_error("Unable to computer centroid: no verticies found");
+	
+	centroid_ = Vector3();
+	
+	for (unsigned int i = 0; i < vertices_.size(); i++) {
+		centroid_ +=  vertices_[i];
+	}
+	
+	centroid_ /= (float)vertices_.size();
+}
+
+void Model::center() {
+	if (vertices_.size() == 0)
+		throw std::runtime_error("Unable to center model: no verticies found");
+	
+	for (unsigned int i = 0; i < vertices_.size(); i++) {
+		vertices_[i] -= centroid_;
+	}
+}
+
+float Model::boundary() {
+	if (vertices_.size() == 0)
+		throw std::runtime_error("Unable to compute max distance: no verticies found");
+		
+	float distance, max = 0;
+	
+	for (unsigned int i = 0; i < vertices_.size(); i++) {
+		distance = centroid_.distance(vertices_[i]);
+		
+		if (distance > max)
+			max = distance;
+	}
+	
+	return max;
 }
 
 void Model::loadTextures() {
@@ -236,13 +278,12 @@ void Model::render() {
 		
 		MaterialPtr material = group->material_;
 		
-		// Disable material parameters until I have a chance to properly test and debug them.
-		// Update: these calls appear to be correct, which means that the model I'm using for
-		// testing was incorrectly converted from LW to OBJ.
-		/*glMaterialfv(GL_FRONT, GL_AMBIENT, material->ka_);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, material->kd_);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, material->ks_);
-		glMaterialfv(GL_FRONT, GL_EMISSION, material->ke_);*/
+		if (useParams_) {
+			glMaterialfv(GL_FRONT, GL_AMBIENT, material->ka_);
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, material->kd_);
+			glMaterialfv(GL_FRONT, GL_SPECULAR, material->ks_);
+			glMaterialfv(GL_FRONT, GL_EMISSION, material->ke_);
+		}
 		
 		if (!material->texture_.isNull()) {
 			if (!shaders_.isNull() && shaders_->hasSampler())

@@ -10,13 +10,7 @@ A simple Wavefront OBJ model viewer written in C++ using OpenGL, FreeGLUT, and S
 
 **Note:** All file references (material libraries, textures) are assumed to be relative to the *.obj file.
 
-**Current Limitations:**
-* Assumptions are made about the bounds of the model.
-* Points are ignored.
-* Many material properties are ignored.
-
 **TODO:**
-* Address limitations.
 * Implement Arcball technique for mouse interaction.
 * Implement anti-aliasing.
 
@@ -39,9 +33,11 @@ To install the executable run:
 
 To view a model run:
 
-*$ obj-viewer FILE*
+*$ obj-viewer [-m] FILE*
 
-where *FILE* is the path of the OBJ file. The model should then be displayed in a window. Use the arrow keys rotate the model. Escape quits the program.
+where *FILE* is the path of the OBJ file. The "-m" flag turns on material properties. Many converted models do not set these values correctly, so they are turned off by default.
+
+After running the above command, the model should then be displayed in a window. The arrow keys rotate the model, +/- zooms in and out, and escape quits the program.
 
 ## License
 

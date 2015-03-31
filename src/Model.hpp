@@ -97,20 +97,40 @@ class Model {
 	public:
 		Model();
 		
+		void setUseParams(bool useParams);
+		
+		//adds vertices, normals, and texture coordinates
 		void addVertex(const Point3& vertex);
 		void addNormal(const Point3& normal);
 		void addTexCoord(const Point2& coord);
 		
+		//computes the model's centroid
+		void centroid();
+		
+		//centers the model on it's centroid
+		void center();
+		
+		//computes the maximum distance of all points from the centroid
+		float boundary();
+		
+		//adds a group of faces (determined by 'usemtl' directives) to the model
 		void addGroup(const GroupPtr& group);
 		
+		//loads all textures associated with the model
 		void loadTextures();
+		
+		//compiles all display lists associated with the model
 		void compileLists();
 		
+		//sets vertex/fragment shaders
 		void setShaders(ShadersPtr shaders);
 		
+		//renders the model
 		void render();
 		
 	private:
+		bool useParams_;
+		Vector3 centroid_;
 		std::vector<Point3> vertices_;
 		std::vector<Point3> normals_;
 		std::vector<Point2> texCoords_;

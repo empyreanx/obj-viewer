@@ -23,7 +23,7 @@ class Viewer {
 		void resize(int width, int height);
 		void keyDown(unsigned char key, int x, int y);
 		void specialKey(int key, int x, int y);
-		
+
 		static void setInstance(Viewer* instance);
 	
 		static void idleCallback();
@@ -40,6 +40,7 @@ class Viewer {
 		bool running_;
 		ModelPtr model_;
 		float thetaX_, thetaY_, thetaZ_;
+		float farPlane_, modelDistance_, modelBoundary_;
 };
 
 

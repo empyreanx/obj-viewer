@@ -68,73 +68,6 @@ ModelPtr ObjParser::parseObj(const std::string& fileName) {
 	return model;
 }
 
-Point3 ObjParser::parseVertex(std::stringstream& sstream) {
-	float x, y, z;
-	
-	sstream >> x >> y >> z;
-	
-	return Point3(x, y, z);
-}
-
-Point3 ObjParser::parseNormal(std::stringstream& sstream) {
-	float x, y, z;	
-	
-	sstream >> x >> y >> z;
-	
-	return Point3(x, y, z);
-}
-
-Point2 ObjParser::parseTexCoord(std::stringstream& sstream) {
-	float x, y;
-	
-	sstream >> x >> y;
-	
-	return Point2(x, 1.0 - y);
-}
-
-FacePtr ObjParser::parseFace(std::stringstream& sstream, const MaterialPtr& material) {
-	FacePtr face;
-	
-	if (!material.isNull())
-		face = FacePtr(new Face(material));
-	else
-		face = FacePtr(new Face());
-	
-	std::string indexGroup;
-	
-	while (sstream >> indexGroup) {
-		std::vector<std::string> indices = split(indexGroup, '/');
-		
-		if (1 == indices.size()) {
-			face->addVertexIndex(stou(indices[0]));
-		} else if (2 == indices.size()) {
-			face->addVertexIndex(stou(indices[0]));
-			face->addTexCoordIndex(stou(indices[1]));
-		} else if (3 == indices.size()) {
-			face->addVertexIndex(stou(indices[0]));
-			face->addNormalIndex(stou(indices[2]));
-			
-			if ("" != indices[1])
-				face->addTexCoordIndex(stou(indices[1]));
-		} else {
-			throw std::runtime_error("Invalid face definition in OBJ file");
-		}
-	}
-	
-	return face;
-}
-
-MaterialPtr ObjParser::findMaterial(const std::vector<MaterialPtr>& materials, const std::string& name) {
-	for (unsigned int i = 0; i < materials.size(); i++) {
-		if (materials[i]->name() == name)
-			return materials[i];
-	}
-	
-	throw std::runtime_error("Unable to find referenced material " + name);
-}
-
-
-
 std::vector<MaterialPtr> ObjParser::parseMtl(const std::string& fileName) {
 	std::string path = filePath(fileName);
 	
@@ -192,6 +125,62 @@ std::vector<MaterialPtr> ObjParser::parseMtl(const std::string& fileName) {
 	return materials;
 }
 
+Point3 ObjParser::parseVertex(std::stringstream& sstream) {
+	float x, y, z;
+	
+	sstream >> x >> y >> z;
+	
+	return Point3(x, y, z);
+}
+
+Point3 ObjParser::parseNormal(std::stringstream& sstream) {
+	float x, y, z;
+	
+	sstream >> x >> y >> z;
+	
+	return Point3(x, y, z);
+}
+
+Point2 ObjParser::parseTexCoord(std::stringstream& sstream) {
+	float x, y;
+	
+	sstream >> x >> y;
+	
+	return Point2(x, 1.0 - y);
+}
+
+FacePtr ObjParser::parseFace(std::stringstream& sstream, const MaterialPtr& material) {
+	FacePtr face;
+	
+	if (!material.isNull())
+		face = FacePtr(new Face(material));
+	else
+		face = FacePtr(new Face());
+	
+	std::string indexGroup;
+	
+	while (sstream >> indexGroup) {
+		std::vector<std::string> indices = split(indexGroup, '/');
+		
+		if (1 == indices.size()) {
+			face->addVertexIndex(stou(indices[0]));
+		} else if (2 == indices.size()) {
+			face->addVertexIndex(stou(indices[0]));
+			face->addTexCoordIndex(stou(indices[1]));
+		} else if (3 == indices.size()) {
+			face->addVertexIndex(stou(indices[0]));
+			face->addNormalIndex(stou(indices[2]));
+			
+			if ("" != indices[1])
+				face->addTexCoordIndex(stou(indices[1]));
+		} else {
+			throw std::runtime_error("Invalid face definition in OBJ file");
+		}
+	}
+	
+	return face;
+}
+
 std::string ObjParser::parseName(std::stringstream& sstream) {
 	std::string name, word;
 	
@@ -207,6 +196,15 @@ std::string ObjParser::parseName(std::stringstream& sstream) {
 
 std::string ObjParser::parseFileName(const std::string& prefix, const std::string& line) {
 	return trim(line.substr(line.find(prefix) + prefix.size() + 1));
+}
+
+MaterialPtr ObjParser::findMaterial(const std::vector<MaterialPtr>& materials, const std::string& name) {
+	for (unsigned int i = 0; i < materials.size(); i++) {
+		if (materials[i]->name() == name)
+			return materials[i];
+	}
+	
+	throw std::runtime_error("Unable to find referenced material " + name);
 }
 
 std::string ObjParser::filePath(const std::string& fileName) {

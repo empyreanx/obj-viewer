@@ -33,19 +33,16 @@ void Viewer::initGl() {
 	glClearDepth(1.0f);
 	glDepthFunc(GL_LEQUAL);
 	glShadeModel(GL_SMOOTH);
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	//TODO: automatically far clipping plane based on model size
-	gluPerspective(45.0f, (GLfloat)width_/(GLfloat)height_, 0.1f, 1000.0f);
-	glMatrixMode(GL_MODELVIEW);
     
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 }
 
-void Viewer::setModel(const SmartPtr<Model>& model) {
+void Viewer::setModel(const ModelPtr& model) {
 	model_ = model;
+	modelBoundary_ = model->boundary();
+	modelDistance_ = modelBoundary_ * 2.0f;
+	farPlane_ = modelDistance_ + modelBoundary_;
 }
 
 void Viewer::start() {
@@ -67,12 +64,14 @@ void Viewer::idle() {
 void Viewer::display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(45.0f, (GLfloat)width_/(GLfloat)height_, 0.1f, farPlane_);
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	// TODO: automatically set initial translation based on model size
-	glTranslatef(0.0f, 0.0f, -5.0f);
-	//glTranslatef(0.0f, 0.0f, -100.0f);
+	glTranslatef(0.0f, 0.0f, -modelDistance_);
 	glRotatef(thetaX_, 1.0f, 0.0f, 0.0f);
 	glRotatef(thetaY_, 0.0f, 1.0f, 0.0f);
 	
@@ -85,14 +84,27 @@ void Viewer::resize(int width, int height) {
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//TODO: automatically far clipping plane based on model size
-	gluPerspective(45.0f, (GLfloat)width_/(GLfloat)height_, 0.1f, 1000.0f);
+	gluPerspective(45.0f, (GLfloat)width_/(GLfloat)height_, 0.1f, farPlane_);
 	glMatrixMode(GL_MODELVIEW);
 }
 
 void Viewer::keyDown(unsigned char key, int x, int y) {
-	if (27 == key) {
-		stop();
+	switch (key) {
+		case 27:	//escape
+			stop();
+			break;
+			
+		case '+':
+			modelDistance_ += modelBoundary_ / 10.0f;
+			farPlane_ = modelDistance_ + modelBoundary_;
+			break;
+			
+		case '-':
+			if (modelDistance_ - modelBoundary_ > 0.0f) {
+				modelDistance_ -= modelBoundary_ / 10.0f;
+				farPlane_ = modelDistance_ + modelBoundary_;
+			}
+			break;
 	}
 }
 
