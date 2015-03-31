@@ -40,7 +40,7 @@ class Viewer {
 		bool running_;
 		ModelPtr model_;
 		float thetaX_, thetaY_, thetaZ_;
-		float farPlane_, modelDistance_, modelBoundary_;
+		float farPlane_, modelDistance_, modelRadius_;
 };
 
 

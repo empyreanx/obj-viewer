@@ -106,11 +106,11 @@ class Model {
 		//computes the model's centroid
 		void centroid();
 		
+		//computes the maximum distance of all points from the centroid
+		float radius();
+		
 		//centers the model on it's centroid
 		void center();
-		
-		//computes the maximum distance of all points from the centroid
-		float boundary();
 		
 		//adds a group of faces (determined by 'usemtl' directives) to the model
 		void addGroup(const GroupPtr& group);

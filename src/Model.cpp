@@ -66,6 +66,32 @@ void Texture::load() {
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, converted->w, converted->h, 0, GL_RGB, GL_UNSIGNED_BYTE, converted->pixels);
 			
 			SDL_FreeSurface(converted);
+		} else if (32 == bpp) {
+			SDL_PixelFormat format;
+			
+			format.palette = 0;
+			format.colorkey = 0;
+			format.alpha = 0;
+			format.BitsPerPixel = 32;
+			format.BytesPerPixel = 4;
+			
+			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+			  format.Rmask = 0xFF000000;
+			  format.Gmask = 0x00FF0000;
+			  format.Bmask = 0x0000FF00;
+			  format.Amask = 0x000000FF;
+			#else
+			  format.Rmask = 0x000000FF;
+			  format.Gmask = 0x0000FF00;
+			  format.Bmask = 0x00FF0000;
+			  format.Amask = 0xFF000000;
+			#endif
+			
+			SDL_Surface* converted = SDL_ConvertSurface(surface, &format, surface->flags);
+			
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, converted->w, converted->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, converted->pixels);
+			
+			SDL_FreeSurface(converted);
 		} else {
 			throw std::runtime_error("Bits per pixel of " + std::to_string(bpp) + " not yet supported");
 		}
@@ -216,16 +242,7 @@ void Model::centroid() {
 	centroid_ /= (float)vertices_.size();
 }
 
-void Model::center() {
-	if (vertices_.size() == 0)
-		throw std::runtime_error("Unable to center model: no verticies found");
-	
-	for (unsigned int i = 0; i < vertices_.size(); i++) {
-		vertices_[i] -= centroid_;
-	}
-}
-
-float Model::boundary() {
+float Model::radius() {
 	if (vertices_.size() == 0)
 		throw std::runtime_error("Unable to compute max distance: no verticies found");
 		
@@ -239,6 +256,15 @@ float Model::boundary() {
 	}
 	
 	return max;
+}
+
+void Model::center() {
+	if (vertices_.size() == 0)
+		throw std::runtime_error("Unable to center model: no verticies found");
+	
+	for (unsigned int i = 0; i < vertices_.size(); i++) {
+		vertices_[i] -= centroid_;
+	}
 }
 
 void Model::loadTextures() {

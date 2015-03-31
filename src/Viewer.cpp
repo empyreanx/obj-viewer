@@ -40,9 +40,9 @@ void Viewer::initGl() {
 
 void Viewer::setModel(const ModelPtr& model) {
 	model_ = model;
-	modelBoundary_ = model->boundary();
-	modelDistance_ = modelBoundary_ * 2.0f;
-	farPlane_ = modelDistance_ + modelBoundary_;
+	modelRadius_ = model->radius();
+	modelDistance_ = modelRadius_ * 2.0f;
+	farPlane_ = modelDistance_ + modelRadius_;
 }
 
 void Viewer::start() {
@@ -95,14 +95,14 @@ void Viewer::keyDown(unsigned char key, int x, int y) {
 			break;
 			
 		case '+':
-			modelDistance_ += modelBoundary_ / 10.0f;
-			farPlane_ = modelDistance_ + modelBoundary_;
+			modelDistance_ += modelRadius_ / 10.0f;
+			farPlane_ = modelDistance_ + modelRadius_;
 			break;
 			
 		case '-':
-			if (modelDistance_ - modelBoundary_ > 0.0f) {
-				modelDistance_ -= modelBoundary_ / 10.0f;
-				farPlane_ = modelDistance_ + modelBoundary_;
+			if (modelDistance_ - modelRadius_ > 0.0f) {
+				modelDistance_ -= modelRadius_ / 10.0f;
+				farPlane_ = modelDistance_ + modelRadius_;
 			}
 			break;
 	}
