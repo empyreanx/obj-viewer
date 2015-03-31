@@ -1,6 +1,4 @@
 # Wavefront OBJ Viewer
-
-#### Work in Progress
  
 ## Introduction
 
