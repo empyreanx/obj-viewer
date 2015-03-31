@@ -23,7 +23,6 @@ class Texture {
 		std::string file_;
 		bool loaded_;
 		GLuint id_;
-		SDL_Surface* surface_;
 };
 
 typedef SmartPtr<Texture> TexturePtr;
