@@ -33,7 +33,7 @@ link_directories("/usr/lib/nvidia-331-updates")
 # Executable
 set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -DGL_GLEXT_PROTOTYPES -DINSTALL_PREFIX='\"${CMAKE_INSTALL_PREFIX}\"'")
 
-add_executable(bin/obj-viewer "src/Viewer.cpp" "src/Model.cpp" "src/Shaders.cpp" "src/ObjParser.cpp" "src/Main.cpp")
+add_executable(bin/obj-viewer "src/Arcball.cpp" "src/Viewer.cpp" "src/Model.cpp" "src/Shaders.cpp" "src/ObjParser.cpp" "src/Main.cpp")
 target_link_libraries(bin/obj-viewer ${GLUT_LIBRARY} "GL" "GLU" "SDL_image" "SDL")
 
 # Installation

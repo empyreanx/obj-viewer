@@ -24,7 +24,7 @@ class ObjParser {
 		FacePtr parseFace(std::stringstream& sstream, const MaterialPtr& material);
 		std::string parseName(std::stringstream& sstream);
 		std::string parseFileName(const std::string& prefix, const std::string& line);
-		
+
 		/*
 		 * Utility methods
 		 */

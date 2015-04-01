@@ -2,6 +2,7 @@
 #define _VIEWER_HPP
 
 #include "Model.hpp"
+#include "Math/Matrix3.hpp"
 
 #include <string>
 
@@ -40,6 +41,7 @@ class Viewer {
 		bool running_;
 		ModelPtr model_;
 		float thetaX_, thetaY_, thetaZ_;
+		//Matrix3f rotation_;
 		float farPlane_, modelDistance_, modelRadius_;
 };
 
