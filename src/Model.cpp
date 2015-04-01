@@ -213,15 +213,15 @@ void Model::setUseParams(bool useParams) {
 	useParams_ = useParams;
 }
 
-void Model::addVertex(const Point3& vertex) {
+void Model::addVertex(const Point3f& vertex) {
 	vertices_.push_back(vertex);
 }
 
-void Model::addNormal(const Point3& normal) {
+void Model::addNormal(const Point3f& normal) {
 	normals_.push_back(normal);
 }
 
-void Model::addTexCoord(const Point2& coord) {
+void Model::addTexCoord(const Point2f& coord) {
 	texCoords_.push_back(coord);
 }
 
@@ -233,7 +233,7 @@ void Model::centroid() {
 	if (vertices_.size() == 0)
 		throw std::runtime_error("Unable to computer centroid: no verticies found");
 	
-	centroid_ = Vector3();
+	centroid_ = Vector3f::zero();
 	
 	for (unsigned int i = 0; i < vertices_.size(); i++) {
 		centroid_ +=  vertices_[i];

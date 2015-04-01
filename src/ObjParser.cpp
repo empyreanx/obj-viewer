@@ -125,28 +125,28 @@ std::vector<MaterialPtr> ObjParser::parseMtl(const std::string& fileName) {
 	return materials;
 }
 
-Point3 ObjParser::parseVertex(std::stringstream& sstream) {
+Point3f ObjParser::parseVertex(std::stringstream& sstream) {
 	float x, y, z;
 	
 	sstream >> x >> y >> z;
 	
-	return Point3(x, y, z);
+	return Point3f(x, y, z);
 }
 
-Point3 ObjParser::parseNormal(std::stringstream& sstream) {
+Point3f ObjParser::parseNormal(std::stringstream& sstream) {
 	float x, y, z;
 	
 	sstream >> x >> y >> z;
 	
-	return Point3(x, y, z);
+	return Point3f(x, y, z);
 }
 
-Point2 ObjParser::parseTexCoord(std::stringstream& sstream) {
+Point2f ObjParser::parseTexCoord(std::stringstream& sstream) {
 	float x, y;
 	
 	sstream >> x >> y;
 	
-	return Point2(x, 1.0 - y);
+	return Point2f(x, 1.0 - y);
 }
 
 FacePtr ObjParser::parseFace(std::stringstream& sstream, const MaterialPtr& material) {

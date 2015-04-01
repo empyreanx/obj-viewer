@@ -1,7 +1,6 @@
 #ifndef _OBJ_PARSER_HPP
 #define _OBJ_PARSER_HPP
 
-#include "Math.hpp"
 #include "Model.hpp"
 #include "SmartPtr.hpp"
 
@@ -19,9 +18,9 @@ class ObjParser {
 		/*
 		 * OBJ parsing methods
 		 */
-		Point3 parseVertex(std::stringstream& sstream);
-		Point3 parseNormal(std::stringstream& sstream);
-		Point2 parseTexCoord(std::stringstream& sstream);
+		Point3f parseVertex(std::stringstream& sstream);
+		Point3f parseNormal(std::stringstream& sstream);
+		Point2f parseTexCoord(std::stringstream& sstream);
 		FacePtr parseFace(std::stringstream& sstream, const MaterialPtr& material);
 		std::string parseName(std::stringstream& sstream);
 		std::string parseFileName(const std::string& prefix, const std::string& line);

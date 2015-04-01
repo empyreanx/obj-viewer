@@ -1,9 +1,11 @@
 #ifndef _MODEL_HPP
 #define _MODEL_HPP
 
-#include "Math.hpp"
 #include "Shaders.hpp"
 #include "SmartPtr.hpp"
+
+#include "Math/Vector2.hpp"
+#include "Math/Vector3.hpp"
 
 #include <GL/gl.h>
 #include <SDL/SDL.h>
@@ -99,9 +101,9 @@ class Model {
 		void setUseParams(bool useParams);
 		
 		//adds vertices, normals, and texture coordinates
-		void addVertex(const Point3& vertex);
-		void addNormal(const Point3& normal);
-		void addTexCoord(const Point2& coord);
+		void addVertex(const Point3f& vertex);
+		void addNormal(const Point3f& normal);
+		void addTexCoord(const Point2f& coord);
 		
 		//computes the model's centroid
 		void centroid();
@@ -129,10 +131,10 @@ class Model {
 		
 	private:
 		bool useParams_;
-		Vector3 centroid_;
-		std::vector<Point3> vertices_;
-		std::vector<Point3> normals_;
-		std::vector<Point2> texCoords_;
+		Vector3f centroid_;
+		std::vector<Point3f> vertices_;
+		std::vector<Point3f> normals_;
+		std::vector<Point2f> texCoords_;
 		std::vector<GroupPtr> groups_;
 		ShadersPtr shaders_;
 };
