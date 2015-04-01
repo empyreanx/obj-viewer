@@ -313,3 +313,4 @@ Matrix3 rotationMatrix3(const Vector3& axis, const float& angle) {
 	
 	return matrix;
 }
+
