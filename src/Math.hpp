@@ -3,6 +3,8 @@
 
 class Vector2 {
 	public:
+		static Vector2 zero();
+	
 		Vector2();
 		Vector2(float x, float y);
 		Vector2(const Vector2& v);
@@ -41,6 +43,8 @@ class Vector2 {
 
 class Vector3 {
 	public:
+		static Vector3 zero();
+	
 		Vector3();
 		Vector3(float x, float y, float z);
 		Vector3(const Vector3& v);
@@ -81,10 +85,56 @@ class Vector3 {
 		float data_[3];
 };
 
+/*class Vector4 {
+	public:
+		static Vector4 zero();
+		
+		Vector4();
+		Vector4(float x, float y, float z, float w);
+		Vector4(const Vector4& v);
+		Vector4& operator = (const Vector4& v);
+	
+		//accessors
+		float x() const;
+		float y() const;
+		float z() const;
+		float w() const;
+		
+		float* data();
+		
+		//operators
+		Vector4 operator - ();
+		Vector4 operator + (const Vector4& v);
+		Vector4 operator - (const Vector4& v);
+		
+		Vector4& operator += (const Vector4& v);
+		Vector4& operator -= (const Vector4& v);
+		
+		Vector4 operator * (const float& c);
+		Vector4 operator / (const float& c);
+		
+		Vector4& operator *= (const float& c);
+		Vector4& operator /= (const float& c);
+		
+		//inner product
+		float operator* (const Vector4& v);
+		
+		//cross product
+		Vector3 cross(const Vector4& v);
+		
+		//distance & length
+		float norm();
+		float distance(const Vector4& v);
+		
+	private:
+		float data_[4];
+};*/
+
 class Matrix3 {
 	public:
 		static Matrix3 zero();
 		static Matrix3 identity();
+		static Matrix3 rotation(const Vector3& axis, const float& angle);
 		
 		Matrix3();
 		Matrix3(const Matrix3& m);
@@ -101,8 +151,6 @@ class Matrix3 {
 		float data_[9];
 		
 };
-
-Matrix3 rotationMatrix3(const Vector3& axis, const float& angle);
 
 class Matrix4 {
 	public:

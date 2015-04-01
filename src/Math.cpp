@@ -5,8 +5,11 @@
 /*
  * 2D Vector
  */
+Vector2 Vector2::zero() {
+	return Vector2(0.0f, 0.0f);
+}
+
 Vector2::Vector2() {
-	data_[0] = data_[1] = 0;
 }
 
 Vector2::Vector2(float x, float y) {
@@ -107,8 +110,11 @@ float Vector2::distance(const Vector2& v) {
 /*
  * 3D Vector
  */
+Vector3 Vector3::zero() {
+	return Vector3(0.0f, 0.0f, 0.0f);
+} 
+ 
 Vector3::Vector3() {
-	data_[0] = data_[1] = data_[2] = 0;
 } 
 
 Vector3::Vector3(float x, float y, float z) {
@@ -245,6 +251,27 @@ Matrix3 Matrix3::zero() {
 		
 	return matrix;
 }
+
+Matrix3 Matrix3::rotation(const Vector3& axis, const float& angle) {
+	float c = std::cos(angle);
+	float s = std::sin(angle);
+	
+	Matrix3 matrix;
+	
+	matrix(0, 0) = c + (1.0f - c) * axis.x() * axis.x();
+	matrix(0, 1) = (1.0f - c) * axis.x() * axis.y() - s * axis.z();
+	matrix(0, 2) = (1.0f - c) * axis.x() * axis.z() + s * axis.y();
+	
+	matrix(1, 0) = (1.0f - c) * axis.x() * axis.y() + s * axis.z(); 
+	matrix(1, 1) = c + (1.0f - c) * axis.y() * axis.y();
+	matrix(1, 2) = (1.0f - c) * axis.y() * axis.z() - s * axis.x();
+	
+	matrix(2, 0) = (1.0f - c) * axis.x() * axis.z() - s * axis.y();
+	matrix(2, 1) = (1.0f - c) * axis.y() * axis.z() + s * axis.x();
+	matrix(2, 2) = c + (1.0f - c) * axis.z() * axis.z();
+	
+	return matrix;
+}
  
 Matrix3::Matrix3() {
 }
@@ -289,27 +316,6 @@ Matrix3 Matrix3::operator * (Matrix3& m) {
 			matrix(i, j) = sum;
 		}
 	}
-	
-	return matrix;
-}
-
-Matrix3 rotationMatrix3(const Vector3& axis, const float& angle) {
-	float c = std::cos(angle);
-	float s = std::sin(angle);
-	
-	Matrix3 matrix;
-	
-	matrix(0, 0) = c + (1.0f - c) * axis.x() * axis.x();
-	matrix(0, 1) = (1.0f - c) * axis.x() * axis.y() - s * axis.z();
-	matrix(0, 2) = (1.0f - c) * axis.x() * axis.z() + s * axis.y();
-	
-	matrix(1, 0) = (1.0f - c) * axis.x() * axis.y() + s * axis.z(); 
-	matrix(1, 1) = c + (1.0f - c) * axis.y() * axis.y();
-	matrix(1, 2) = (1.0f - c) * axis.y() * axis.z() - s * axis.x();
-	
-	matrix(2, 0) = (1.0f - c) * axis.x() * axis.z() - s * axis.y();
-	matrix(2, 1) = (1.0f - c) * axis.y() * axis.z() + s * axis.x();
-	matrix(2, 2) = c + (1.0f - c) * axis.z() * axis.z();
 	
 	return matrix;
 }
