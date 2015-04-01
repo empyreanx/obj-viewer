@@ -33,7 +33,6 @@ void Viewer::initGl() {
 	glClearDepth(1.0f);
 	glDepthFunc(GL_LEQUAL);
 	glShadeModel(GL_SMOOTH);
-    
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 }
@@ -67,10 +66,10 @@ void Viewer::display() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(45.0f, (GLfloat)width_/(GLfloat)height_, 0.1f, farPlane_);
-
+	gluLookAt(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f);
+	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
 	glTranslatef(0.0f, 0.0f, -modelDistance_);
 	glRotatef(thetaX_, 1.0f, 0.0f, 0.0f);
 	glRotatef(thetaY_, 0.0f, 1.0f, 0.0f);
