@@ -1,15 +1,27 @@
 #include "Viewer.hpp"
 
+#include "Math/Matrix4.hpp"
+
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/freeglut.h>
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include <iostream>
+#include <string>
+
+static float degToRad(float x) {
+	return (x * (M_PI / 180.0));
+}
 
 Viewer* Viewer::instance_ = NULL;
 
-Viewer::Viewer(std::string name, int width, int height) : name_(name), width_(width), 
-	height_(height), running_(false), thetaX_(0.0f), thetaY_(0.0f) {
+Viewer::Viewer(std::string name, int width, int height) : name_(name), width_(width), height_(height), running_(false) {
+	rotation_ = Matrix3f::identity();
+	xRotation_ = Matrix3f::identity();
+	yRotation_ = Matrix3f::identity();
 }
 
 Viewer::~Viewer() {
@@ -70,9 +82,10 @@ void Viewer::display() {
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslatef(0.0f, 0.0f, -modelDistance_);
-	glRotatef(thetaX_, 1.0f, 0.0f, 0.0f);
-	glRotatef(thetaY_, 0.0f, 1.0f, 0.0f);
+
+	Matrix3f rotation = xRotation_ * yRotation_;
+	Matrix4f transform = Matrix4f::isometry(rotation, Vector3f(0.0f, 0.0f, -modelDistance_));
+	glMultTransposeMatrixf(transform.data());
 	
 	model_->render();
 	
@@ -110,19 +123,19 @@ void Viewer::keyDown(unsigned char key, int x, int y) {
 void Viewer::specialKey(int key, int x, int y) {
 	switch(key)	{
 		case GLUT_KEY_UP:
-			thetaX_ += 5.0f;
+			xRotation_ = xRotation_ * Matrix3f::rotation(Vector3f(1.0f, 0.0f, 0.0f), degToRad(-5.0f));
 			break;
 
 		case GLUT_KEY_DOWN:
-			thetaX_ -= 5.0f;
+			xRotation_ = xRotation_ * Matrix3f::rotation(Vector3f(1.0f, 0.0f, 0.0f), degToRad(5.0f));
 			break;
 		
 		case GLUT_KEY_LEFT:
-			thetaY_ -= 5.0f;
+			yRotation_ = yRotation_ * Matrix3f::rotation(Vector3f(0.0f, 1.0f, 0.0f), degToRad(5.0f));
 			break;
 		
 		case GLUT_KEY_RIGHT:
-			thetaY_ += 5.0f;
+			yRotation_ = yRotation_ * Matrix3f::rotation(Vector3f(0.0f, 1.0f, 0.0f), degToRad(-5.0f));
 			break;
 	}
 }

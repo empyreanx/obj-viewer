@@ -22,6 +22,7 @@ class Vector4 {
 		T* data();
 		
 		T& operator() (int i);
+		T operator() (int i) const;
 		
 		//operators
 		Vector4<T> operator - ();
@@ -106,7 +107,12 @@ T* Vector4<T>::data() {
 
 template <class T>
 T& Vector4<T>::operator () (int i) {
-	return _data[i];
+	return data_[i];
+}
+
+template <class T>
+T Vector4<T>::operator () (int i) const {
+	return data_[i];
 }
 
 template <class T>

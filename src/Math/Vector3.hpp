@@ -21,6 +21,7 @@ class Vector3 {
 		T* data();
 		
 		T& operator() (int i);
+		T operator() (int i) const;
 				
 		//operators
 		Vector3<T> operator - ();
@@ -101,6 +102,11 @@ T* Vector3<T>::data() {
 
 template <class T>
 T& Vector3<T>::operator() (int i) {
+	return data_[i];
+}
+
+template <class T>
+T Vector3<T>::operator() (int i) const {
 	return data_[i];
 }
 

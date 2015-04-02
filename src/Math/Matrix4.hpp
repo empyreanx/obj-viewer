@@ -18,6 +18,7 @@ class Matrix4 {
 		T* data();
 		
 		T& operator () (int i, int j);
+		T operator () (int i, int j) const;
 		
 		Vector4<T> operator * (const Vector4<T>& v);
 		Matrix4<T> operator * (Matrix4<T>& m);
@@ -46,6 +47,7 @@ Matrix4<T> Matrix4<T>::zero() {
 	return matrix;
 }
 
+template <class T>
 Matrix4<T> Matrix4<T>::isometry(const Matrix3<T>& rot, const Vector3<T>& trans) {
 	Matrix4<T> matrix = zero();
 	
@@ -57,6 +59,8 @@ Matrix4<T> Matrix4<T>::isometry(const Matrix3<T>& rot, const Vector3<T>& trans) 
 	
 	for (int i = 0; i < 3; i++)
 		matrix(i, 3) = trans(i);
+	
+	matrix(3, 3) = 1.0;
 	
 	return matrix;
 }

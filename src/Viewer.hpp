@@ -40,8 +40,7 @@ class Viewer {
 		int windowId_;
 		bool running_;
 		ModelPtr model_;
-		float thetaX_, thetaY_, thetaZ_;
-		//Matrix3f rotation_;
+		Matrix3f rotation_, xRotation_, yRotation_;
 		float farPlane_, modelDistance_, modelRadius_;
 };
 

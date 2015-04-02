@@ -17,9 +17,10 @@ class Matrix3 {
 		T* data();
 		
 		T& operator () (int i, int j);
+		T operator () (int i, int j) const;
 		
 		Vector3<T> operator * (const Vector3<T>& v);
-		Matrix3<T> operator * (Matrix3<T>& m);
+		Matrix3<T> operator * (const Matrix3<T>& m);
 		
 	private:
 		T data_[9];
@@ -94,6 +95,11 @@ T& Matrix3<T>::operator () (int i, int j) {
 }
 
 template <class T>
+T Matrix3<T>::operator () (int i, int j) const {
+	return data_[3 * i + j];
+}
+
+template <class T>
 Vector3<T> Matrix3<T>::operator * (const Vector3<T>& v) {
 	T x = data_[0] * v.x() + data_[1] * v.y() + data_[2] * v.z();
 	T y = data_[3] * v.x() + data_[4] * v.y() + data_[5] * v.z();
@@ -102,7 +108,7 @@ Vector3<T> Matrix3<T>::operator * (const Vector3<T>& v) {
 }
 
 template <class T>
-Matrix3<T> Matrix3<T>::operator * (Matrix3& m) {
+Matrix3<T> Matrix3<T>::operator * (const Matrix3& m) {
 	Matrix3 matrix;
 	
 	for (int i = 0; i < 3; i++) {
