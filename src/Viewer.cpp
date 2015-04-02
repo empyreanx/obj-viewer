@@ -9,8 +9,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-#include <iostream>
-#include <string>
+#include <stdio.h>
 
 static float degToRad(float x) {
 	return (x * (M_PI / 180.0));
@@ -18,8 +17,9 @@ static float degToRad(float x) {
 
 Viewer* Viewer::instance_ = NULL;
 
-Viewer::Viewer(std::string name, int width, int height) : name_(name), width_(width), height_(height), running_(false) {
-	rotation_ = Matrix3f::identity();
+Viewer::Viewer(std::string name, int width, int height) : name_(name), width_(width), height_(height), 
+	running_(false), mouseEnabled_(false), mouseDown_(false) {
+	arcBallRotation_ = Matrix3f::identity();
 	xRotation_ = Matrix3f::identity();
 	yRotation_ = Matrix3f::identity();
 }
@@ -39,7 +39,6 @@ void Viewer::initGl() {
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	
 	glCullFace(GL_BACK);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClearDepth(1.0f);
@@ -53,6 +52,8 @@ void Viewer::setModel(const ModelPtr& model) {
 	model_ = model;
 	modelRadius_ = model->radius();
 	modelDistance_ = modelRadius_ * 2.0f;
+	arcball_.setRadius(modelRadius_);
+	arcball_.setCenter(Vector3f(0.0f, 0.0f, -modelDistance_));
 	farPlane_ = modelDistance_ + modelRadius_;
 }
 
@@ -83,7 +84,13 @@ void Viewer::display() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	Matrix3f rotation = xRotation_ * yRotation_;
+	Matrix3f rotation;
+	
+	if (mouseEnabled_)
+		rotation = arcBallRotation_;
+	else
+		rotation = xRotation_ * yRotation_;
+
 	Matrix4f transform = Matrix4f::isometry(rotation, Vector3f(0.0f, 0.0f, -modelDistance_));
 	glMultTransposeMatrixf(transform.data());
 	
@@ -105,17 +112,17 @@ void Viewer::keyDown(unsigned char key, int x, int y) {
 		case 27:	//escape
 			stop();
 			break;
+		
+		case 'm':
+			mouseEnabled_ = !mouseEnabled_;
+			break;
 			
 		case '+':
-			modelDistance_ += modelRadius_ / 10.0f;
-			farPlane_ = modelDistance_ + modelRadius_;
+			zoomOut();
 			break;
 			
 		case '-':
-			if (modelDistance_ - modelRadius_ > 0.0f) {
-				modelDistance_ -= modelRadius_ / 10.0f;
-				farPlane_ = modelDistance_ + modelRadius_;
-			}
+			zoomIn();
 			break;
 	}
 }
@@ -131,13 +138,67 @@ void Viewer::specialKey(int key, int x, int y) {
 			break;
 		
 		case GLUT_KEY_LEFT:
-			yRotation_ = yRotation_ * Matrix3f::rotation(Vector3f(0.0f, 1.0f, 0.0f), degToRad(5.0f));
+			yRotation_ = yRotation_ * Matrix3f::rotation(Vector3f(0.0f, 1.0f, 0.0f), degToRad(-5.0f));
 			break;
 		
 		case GLUT_KEY_RIGHT:
-			yRotation_ = yRotation_ * Matrix3f::rotation(Vector3f(0.0f, 1.0f, 0.0f), degToRad(-5.0f));
+			yRotation_ = yRotation_ * Matrix3f::rotation(Vector3f(0.0f, 1.0f, 0.0f), degToRad(5.0f));
 			break;
 	}
+}
+
+void Viewer::mouse(int button, int state, int x, int y) {
+	if (mouseEnabled_) {
+		Vector2f currentPos((float)x, (float)(height_ - y - 1));
+		
+		if (GLUT_LEFT_BUTTON == button && GLUT_DOWN == state) {		
+			startPos_ = currentPos;
+			mouseDown_ = true;
+		} else if (GLUT_LEFT_BUTTON == button && GLUT_UP == state) {
+			if (startPos_.distance(currentPos) > 5.0f)
+				arcBallRotation_ = arcball_.rotation(startPos_, currentPos) * arcBallRotation_;
+			
+			mouseDown_ = false;
+		} else if (3 == button) {	//hack for mousewheel down
+			zoomIn();
+		} else if (4 == button) {	//hack for mousewheel up
+			zoomOut();
+		}
+	}
+}
+
+void Viewer::mouseMove(int x, int y) {
+	if (mouseEnabled_ && mouseDown_) {
+		Vector2f currentPos((float)x, (float)(height_ - y - 1));
+		
+		if (startPos_.distance(currentPos) > 5.0f) {
+			arcBallRotation_ = arcball_.rotation(startPos_, currentPos) * arcBallRotation_;
+			startPos_ = currentPos;
+		}
+	}
+}
+
+/*void Viewer::mouseWheel(int button, int dir, int x, int y) {
+	if (mouseEnabled_) {
+		if (dir > 0)
+			zoomOut();
+		else
+			zoomIn();
+	}
+}*/
+
+void Viewer::zoomIn() {
+	if (modelDistance_ - modelRadius_ > 0.0f) {
+		modelDistance_ -= modelRadius_ / 10.0f;
+		farPlane_ = modelDistance_ + modelRadius_;
+		arcball_.setCenter(Vector3f(0.0f, 0.0f, -modelDistance_));
+	}
+}
+
+void Viewer::zoomOut() {	
+	modelDistance_ += modelRadius_ / 10.0f;
+	farPlane_ = modelDistance_ + modelRadius_;
+	arcball_.setCenter(Vector3f(0.0f, 0.0f, -modelDistance_));
 }
 
 /*
@@ -149,6 +210,9 @@ void Viewer::setInstance(Viewer* instance) {
 	glutDisplayFunc(displayCallback);
 	glutKeyboardFunc(keyDownCallback);
 	glutSpecialFunc(specialKeyCallback);
+	glutMouseFunc(mouseCallback);
+	glutMotionFunc(mouseMoveCallback);
+	//glutMouseWheelFunc(mouseWheelCallback);
 }
 
 void Viewer::idleCallback() {
@@ -170,3 +234,15 @@ void Viewer::keyDownCallback(unsigned char key, int x, int y) {
 void Viewer::specialKeyCallback(int key, int x, int y) {
 	instance_->specialKey(key, x, y);
 }
+
+void Viewer::mouseCallback(int button, int state, int x, int y) {
+	instance_->mouse(button, state, x, y);
+}
+
+void Viewer::mouseMoveCallback(int x, int y) {
+	instance_->mouseMove(x, y);
+}
+
+/*void Viewer::mouseWheelCallback(int button, int dir, int x, int y) {
+	instance_->mouseWheel(button, dir, x, y);
+}*/

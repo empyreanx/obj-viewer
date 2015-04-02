@@ -45,6 +45,8 @@ class Vector4 {
 		T norm();
 		T distance(const Vector4<T>& v);
 		
+		Vector4<T> normalize();
+		
 	private:
 		float data_[4];
 };
@@ -178,7 +180,7 @@ Vector4<T>& Vector4<T>::operator /= (const T& c) {
 
 template <class T>
 T Vector4<T>::operator* (const Vector4<T>& v) {
-	return data_[0] * data_[0] + data_[1] * data_[1] + data_[2] * data_[2] + data_[3] * data_[3];
+	return data_[0] * v.data_[0] + data_[1] * v.data_[1] + data_[2] * v.data_[2] + data_[3] * v.data_[3];
 }
 
 template <class T>
@@ -189,6 +191,11 @@ T Vector4<T>::norm() {
 template <class T>
 T Vector4<T>::distance(const Vector4<T>& v) {
 	return (*this - v).norm();
+}
+
+template <class T>
+Vector4<T> Vector4<T>::normalize() {
+	return *this / this->norm();
 }
 
 typedef Vector4<float> Vector4f;

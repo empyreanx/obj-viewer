@@ -107,7 +107,7 @@ Matrix4<T> Matrix4<T>::operator * (Matrix4& m) {
 	
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			float sum = 0.0f;
+			T sum = 0.0f;
 			
 			for (int k = 0; k < 4; k++) {
 				sum += (*this)(i, k) * m(k, j);

@@ -7,7 +7,7 @@
 
 class Arcball {
 	public:
-		Arcball(const Vector3f& center, const float& radius);
+		Arcball();
 		
 		void setCenter(const Vector3f& center);
 		Vector3f center();

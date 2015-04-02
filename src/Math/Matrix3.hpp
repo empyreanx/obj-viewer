@@ -113,7 +113,7 @@ Matrix3<T> Matrix3<T>::operator * (const Matrix3& m) {
 	
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			float sum = 0.0f;
+			T sum = 0.0f;
 			
 			for (int k = 0; k < 3; k++) {
 				sum += (*this)(i, k) * m(k, j);
