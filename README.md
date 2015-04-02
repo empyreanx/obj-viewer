@@ -6,9 +6,6 @@ A simple Wavefront OBJ model viewer written in C++ using OpenGL, FreeGLUT, and S
 subset of the Wavefront OBJ specification need to render polygonal meshes is supported. All file 
 references (material libraries, textures) are assumed to be relative to the *.obj file.
 
-**TODO:**
-* Implement anti-aliasing.
-
 ## Building 
 
 You must have OpenGL, FreeGLUT, SDL_image, CMake, and a C++ compiler installed. Additionally, you must manually set the OpenGL

@@ -30,10 +30,7 @@ float Arcball::radius() {
 Matrix3f Arcball::rotation(const Vector2f& start, const Vector2f& end) {
 	 //for simplicity we assume the eye is at the origin since that's all we need for this application
 	GLdouble x1, y1, z1, x2, y2, z2;
-	
 	GLdouble modelView[16] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0};
-	//GLdouble modelView[16];
-	//glGetDoublev(GL_MODELVIEW_MATRIX, modelView);
 	
 	GLdouble projection[16];
 	glGetDoublev(GL_PROJECTION_MATRIX, projection);
