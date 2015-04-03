@@ -39,13 +39,21 @@ Matrix3f Arcball::rotation(const Vector2f& start, const Vector2f& end) {
 	glGetIntegerv(GL_VIEWPORT, viewport);
 	
 	//find the rays from the start/end vectors (in screen coordinates) to the corresponding points on the sphere
-	gluUnProject(start.x(), start.y(), 0.0f, modelView, projection, viewport, &x1, &y1, &z1);
-	gluUnProject(start.x(), start.y(), 1.0f, modelView, projection, viewport, &x2, &y2, &z2);
-	Vector3f v1(x2 - x1, y2 - y1, z2 - z1);
+	gluUnProject(start(0), start(1), 0.0f, modelView, projection, viewport, &x1, &y1, &z1);
+	gluUnProject(start(0), start(1), 1.0f, modelView, projection, viewport, &x2, &y2, &z2);
 	
-	gluUnProject(end.x(), end.y(), 0.0f, modelView, projection, viewport, &x1, &y1, &z1);
-	gluUnProject(end.x(), end.y(), 1.0f, modelView, projection, viewport, &x2, &y2, &z2);
-	Vector3f v2(x2 - x1, y2 - y1, z2 - z1);
+	Vector3f v1;
+	v1(0) = (float)(x2 - x1);
+	v1(1) = (float)(y2 - y1);
+	v1(2) = (float)(z2 - z1);
+	
+	gluUnProject(end(0), end(1), 0.0f, modelView, projection, viewport, &x1, &y1, &z1);
+	gluUnProject(end(0), end(1), 1.0f, modelView, projection, viewport, &x2, &y2, &z2);
+	
+	Vector3f v2;
+	v2(0) = (float)(x2 - x1);
+	v2(1) = (float)(y2 - y1);
+	v2(2) = (float)(z2 - z1);
 	
 	//find intersection with sphere
 	float c = (center_ * center_) - (radius_ * radius_);
@@ -83,5 +91,5 @@ Matrix3f Arcball::rotation(const Vector2f& start, const Vector2f& end) {
 	v2 = v2.normalize();
 	
 	//find matrix corresponding to a rotating v1 to v2
-	return Matrix3f::rotation(v1.cross(v2).normalize(), std::acos(v1 * v2));
+	return constructRotation<float>(crossProduct(v1, v2).normalize(), std::acos(v1 * v2));
 }

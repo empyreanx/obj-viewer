@@ -1,9 +1,8 @@
 #ifndef _ARCBALL_HPP
 #define _ARCBALL_HPP
 
-#include "Math/Matrix3.hpp"
-#include "Math/Vector2.hpp"
-#include "Math/Vector3.hpp"
+#include "Matrix.hpp"
+#include "Vector.hpp"
 
 class Arcball {
 	public:

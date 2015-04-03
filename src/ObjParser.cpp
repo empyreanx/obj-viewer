@@ -130,7 +130,11 @@ Point3f ObjParser::parseVertex(std::stringstream& sstream) {
 	
 	sstream >> x >> y >> z;
 	
-	return Point3f(x, y, z);
+	Point3f p;
+	p(0) = x;
+	p(1) = y;
+	p(2) = z;
+	return p;
 }
 
 Point3f ObjParser::parseNormal(std::stringstream& sstream) {
@@ -138,7 +142,11 @@ Point3f ObjParser::parseNormal(std::stringstream& sstream) {
 	
 	sstream >> x >> y >> z;
 	
-	return Point3f(x, y, z);
+	Point3f p;
+	p(0) = x;
+	p(1) = y;
+	p(2) = z;
+	return p;
 }
 
 Point2f ObjParser::parseTexCoord(std::stringstream& sstream) {
@@ -146,7 +154,10 @@ Point2f ObjParser::parseTexCoord(std::stringstream& sstream) {
 	
 	sstream >> x >> y;
 	
-	return Point2f(x, 1.0 - y);
+	Point2f p;
+	p(0) = x;
+	p(1) = 1.0f - y;
+	return p;
 }
 
 FacePtr ObjParser::parseFace(std::stringstream& sstream, const MaterialPtr& material) {

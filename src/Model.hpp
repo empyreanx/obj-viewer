@@ -4,8 +4,7 @@
 #include "Shaders.hpp"
 #include "SmartPtr.hpp"
 
-#include "Math/Vector2.hpp"
-#include "Math/Vector3.hpp"
+#include "Vector.hpp"
 
 #include <GL/gl.h>
 #include <SDL/SDL.h>

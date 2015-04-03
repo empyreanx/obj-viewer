@@ -3,7 +3,7 @@
 
 #include "Arcball.hpp"
 #include "Model.hpp"
-#include "Math/Matrix3.hpp"
+#include "Matrix.hpp"
 
 #include <string>
 
