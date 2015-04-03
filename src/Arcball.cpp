@@ -91,5 +91,5 @@ Matrix3f Arcball::rotation(const Vector2f& start, const Vector2f& end) {
 	v2 = v2.normalize();
 	
 	//find matrix corresponding to a rotating v1 to v2
-	return constructRotation<float>(crossProduct(v1, v2).normalize(), std::acos(v1 * v2));
+	return rotationMatrix(crossProduct(v1, v2).normalize(), std::acos(v1 * v2));
 }

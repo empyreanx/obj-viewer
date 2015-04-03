@@ -102,7 +102,7 @@ void Viewer::display() {
 	translation(1) = 0.0f;
 	translation(2) = -modelDistance_;
 
-	Matrix4f transform = constructIsometry(rotation, translation);
+	Matrix4f transform = isometryMatrix(rotation, translation);
 	glMultTransposeMatrixf(transform.data());
 	
 	model_->render();
@@ -147,19 +147,19 @@ void Viewer::specialKey(int key, int x, int y) {
 	
 	switch(key)	{
 		case GLUT_KEY_UP:		
-			xRotation_ = xRotation_ * constructRotation(xAxis, degToRad(-5.0f));
+			xRotation_ = xRotation_ * rotationMatrix(xAxis, degToRad(-5.0f));
 			break;
 
 		case GLUT_KEY_DOWN:
-			xRotation_ = xRotation_ * constructRotation(xAxis, degToRad(5.0f));
+			xRotation_ = xRotation_ * rotationMatrix(xAxis, degToRad(5.0f));
 			break;
 		
 		case GLUT_KEY_LEFT:
-			yRotation_ = yRotation_ * constructRotation(yAxis, degToRad(-5.0f));
+			yRotation_ = yRotation_ * rotationMatrix(yAxis, degToRad(-5.0f));
 			break;
 		
 		case GLUT_KEY_RIGHT:
-			yRotation_ = yRotation_ * constructRotation(yAxis, degToRad(5.0f));
+			yRotation_ = yRotation_ * rotationMatrix(yAxis, degToRad(5.0f));
 			break;
 	}
 }

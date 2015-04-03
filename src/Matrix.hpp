@@ -113,7 +113,7 @@ Matrix<T,M,N> Matrix<T,M,N>::operator * (const Matrix<T,N,M>& m) {
 }
 
 template <class T>
-Matrix<T,4,4> constructIsometry(const Matrix<T,3,3>& rot, const Vector<T,3>& trans) {
+Matrix<T,4,4> isometryMatrix(const Matrix<T,3,3>& rot, const Vector<T,3>& trans) {
 	Matrix<T,4,4> ret = Matrix<T,4,4>::zero();
 	
 	for (int i = 0; i < 3; i++) {
@@ -131,7 +131,7 @@ Matrix<T,4,4> constructIsometry(const Matrix<T,3,3>& rot, const Vector<T,3>& tra
 }
 
 template <class T>
-Matrix<T,3,3> constructRotation(const Vector<T,3>& axis, const T& angle) {
+Matrix<T,3,3> rotationMatrix(const Vector<T,3>& axis, const T& angle) {
 	T c = std::cos(angle);
 	T s = std::sin(angle);
 	
