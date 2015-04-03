@@ -22,8 +22,6 @@ class Matrix {
 		T operator () (int i, int j) const;
 		
 		Vector<T,N> operator * (const Vector<T,N>& v);
-		//Matrix<T,M,N> operator * (Matrix<T,N,M>& m);
-		
 		Matrix<T,M,N> operator * (const Matrix<T,N,M>& m);
 		
 	private:
@@ -150,6 +148,25 @@ Matrix<T,3,3> constructRotation(const Vector<T,3>& axis, const T& angle) {
 	ret(2, 0) = (1.0f - c) * axis(0) * axis(2) - s * axis(1);
 	ret(2, 1) = (1.0f - c) * axis(1) * axis(2) + s * axis(0);
 	ret(2, 2) = c + (1.0f - c) * axis(2) * axis(2);
+	
+	return ret;
+}
+
+template <class T, int N, int M, int P>
+Matrix<T,M,P> matrixMult(const Matrix<T,M,N>& m1, const Matrix<T,N,P>& m2) {
+	Matrix<T,M,P> ret;
+	
+	for (int i = 0; i < M; i++) {
+		for (int j = 0; j < P; j++) {
+			T sum = (T)0;
+			
+			for (int k = 0; k < N; k++) {
+				sum += m1(i, k) * m2(k, j);
+			}
+			
+			ret(i, j) = sum;
+		}
+	}
 	
 	return ret;
 }
